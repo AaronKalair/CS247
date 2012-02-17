@@ -1,0 +1,83 @@
+Present Aaron, Owen, Alex
+
+Unit tests show good practices and give us something to write about
+Nightly builds?
+Owen has a server we could use if github dont help us out or as a test platform
+
+Roles?
+Owen Alex Aaron are all confident writing code but are willing to write
+Imm mentioned before she would prefer to write 
+
+Leadership?
+Small group no need for a leader
+Vote on any issues we have
+Need to make sure when deadlines approach everyone is going to be ready
+
+Q&A ?
+How many users are you going to have ?
+What news affects your decisions at the bank
+What news sources do you currently use
+What would the perfect news sources be
+What systems are you going to deploy it on
+Should we push news to the device or should the device poll for it
+
+
+Look at the amount of tweets per minuite on a certain topic, then if we get a spike in tweets for a certain topic look at it in more detail
+Twitter should carry less weight than a BBC news source
+
+Owen recommends reading articles on joelonsoftware.com which looks at good programming practices
+
+Programming Language
+Everyone is happy with Java
+Owen and Alex have experience in C++
+C++ would allow us to use cURL
+
+We could track whats trending, this would take care of some of the work for us
+Could track whats growing quickest
+
+Look at pulling tweets from known journalists as this solves the relability of the information problem
+Twitter search API looks like it should meet our needs
+Twitter has an "attitudes" option that let you search for things like happy / sad etc tweets
+Geotagged tweets may be useful in determining a users location if they only tweet things like "theres an earthquake happening here"
+
+Owen has android app experience, but it was a long time ago
+
+
+App relies on the news analyser
+If we do the specificaton well we could do both in parallel
+Should the app poll the server or should we push updates to it
+Ticker type design would be simpler
+Alerting as soon as something happens would be better, maybe allow custom alerts to be set up?
+
+
+UI Design
+We should get lots of people to test our UI
+
+
+Map Reduce vs Multithreaded
+Map reduce is complex
+Could have one main server that passes jobs to the slaves
+Owen and Alex have used threads before
+- It can be quite tricky
+Java has a nice multithreading api
+
+
+Owen and Alex prefer to do the backend stuff
+Will do any though if we have to
+Theres an android emulator we can use
+
+Alex, Owen and Aaron are all happy to go the conference call on Thursday
+
+
+News Sources
+Twitter
+BBC
+
+Create a general RSS parser (maybe one already exists)
+
+Version Control
+Probably, git and github
+
+
+
+
