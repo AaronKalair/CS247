@@ -1,0 +1,35 @@
+<project name="CS247" default="all" basedir=".">
+
+	<target name="all" depends="client,server,app"/>
+	
+	<target name="client" >
+		<mkdir dir="bin/client"/>
+		<javac srcdir="src/client" destdir="bin/client" includeantruntime="false"/>
+		<jar jarfile="bin/client.jar" basedir="bin/client">
+			<manifest>
+				<attribute name="Main-Class" value="CS247.Client"/>
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="server">
+		<mkdir dir="bin/server"/>
+		<javac srcdir="src/server" destdir="bin/server" includeantruntime="false"/>
+		<jar jarfile="bin/server.jar" basedir="bin/server">
+			<manifest>
+				<attribute name="Main-Class" value="CS247.Server"/>
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="app">
+		<mkdir dir="bin/app"/>
+		<javac srcdir="src/app" destdir="bin/app" includeantruntime="false"/>
+		<jar jarfile="bin/app.jar" basedir="bin/app"/>
+	</target>
+	
+	<target name="clean">
+		<delete dir="bin"/>
+	</target>
+	
+</project>
