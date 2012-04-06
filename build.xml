@@ -4,6 +4,7 @@
 	
 	<target name="client" >
 		<mkdir dir="bin/client"/>
+		<javac srcdir="src/shared" destdir="bin/client" includeantruntime="false"/>
 		<javac srcdir="src/client" destdir="bin/client" includeantruntime="false"/>
 		<jar jarfile="bin/client.jar" basedir="bin/client">
 			<manifest>
@@ -14,6 +15,7 @@
 	
 	<target name="server">
 		<mkdir dir="bin/server"/>
+		<javac srcdir="src/shared" destdir="bin/server" includeantruntime="false"/>
 		<javac srcdir="src/server" destdir="bin/server" includeantruntime="false"/>
 		<jar jarfile="bin/server.jar" basedir="bin/server">
 			<manifest>

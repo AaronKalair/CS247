@@ -8,6 +8,7 @@ import java.util.logging.*;
 public class Server {
 
 	ServerSocket socket;
+	Scheduler scheduler;
 	ArrayList<String> whitelist;
 	Logger logger;
 
@@ -19,7 +20,8 @@ public class Server {
 			throw new RuntimeException("Can't bind to port", e);
 		}
 		logger = Logger.getLogger("global");
-		//scheduler = new Scheduler();
+		scheduler = new Scheduler(this);
+		scheduler.start();
 		//database = new Database(); FIXME: implement database.
 		// add localhost to the whitelist for testing purposes.
 		whitelist = new ArrayList<String>();
@@ -43,7 +45,7 @@ public class Server {
 		// create a new worker if this ip is whitelisted, print a warning otherwise.
 		if(whitelist.contains(ip)){
 			logger.log(Level.INFO, "new client from " + ip);
-			ClientWorkerThread cwt = new ClientWorkerThread(connection);
+			ClientWorkerThread cwt = new ClientWorkerThread(connection, this);
 			cwt.start();
 		} else {
 			logger.log(Level.WARNING, "Non-whitelisted ip " + ip + " attempted to connect.");
