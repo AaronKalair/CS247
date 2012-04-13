@@ -11,6 +11,7 @@ public class Scheduler extends Thread {
 	long prev_time;
 	
 	Scheduler(Server server){
+		super("Scheduler");
 		job_queue = new PriorityQueue<ScheduledJob>();
 		periodic_jobs = new ArrayList<PeriodicJob>();
 		prev_time = System.currentTimeMillis();

@@ -14,6 +14,23 @@ public class Job {
 	public static final byte ALCHEMY_SENTIMENT = 3;
 	public static final byte TEST = 4;
 	
+	// this empty constructor is private since only the static deserialize method should need it.
+	private Job(){
+		params = new ArrayList<String>();
+	}
+	
+	// copy constructor for JobFactory / subclasses to use.
+	Job(Job copy){
+		this.type = copy.type;
+		this.params = new ArrayList<String>(copy.params);
+	}
+	
+	// method to be overridden by subclasses like RSSJob, e.t.c.
+	Result execute(){
+		return null;
+	};
+	
+	// Constructor used by the server before serializing.
 	Job(byte type, String url){
 		this.type = type;
 		params = new ArrayList<String>();
@@ -40,7 +57,7 @@ public class Job {
 		// create a ByteBuffer to make this nicer.
 		ByteBuffer buffer = ByteBuffer.allocate(packet_size);		
 		// add the first 4 bytes as shown above.
-		buffer.putShort(packet_size);
+		buffer.putShort((short)(packet_size - 2));
 		buffer.put(type);
 		buffer.put((byte)params.size());
 		// add all the params, prefixed with their sizes.
@@ -57,11 +74,20 @@ public class Job {
 		return buffer.array();
 	}
 	
-	void deserialize(byte[] raw_buffer){
+	static Job deserialize(InputStream in) throws IOException {
 		// get the data back, assuming it's in the format given by serialize()
 		// this could maybe do with some better error checking.
-		ByteBuffer buffer = ByteBuffer.wrap(raw_buffer);
-		type = buffer.get();
+		ByteBuffer buffer;
+		Job j = new Job();
+		byte[] b = new byte[2];
+		in.read(b, 0, 2);
+		buffer = ByteBuffer.wrap(b);
+		short size = buffer.getShort();
+		b = new byte[size];
+		in.read(b, 0, size);
+		buffer = ByteBuffer.wrap(b);
+		
+		j.type = buffer.get();
 		byte num_params = buffer.get();
 		
 		for(int i = 0; i < num_params; ++i){
@@ -70,12 +96,12 @@ public class Job {
 			buffer.get(param, 0, p_len);
 			try {
 				String p_str = new String(param, "US-ASCII");
-				params.add(p_str);
+				j.addParam(p_str);
 			} catch(UnsupportedEncodingException e){
 				throw new RuntimeException("URLs and Parameters must be ASCII! Can't deserialize.", e);
 			}
 		}
-	
+		return j;
 	}
 
 }
