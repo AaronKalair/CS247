@@ -1,18 +1,19 @@
 package CS247;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 public class Scheduler extends Thread {
 	
 	// job_queue holds the jobs that are ready to be sent to clients.
-	PriorityQueue<ScheduledJob> job_queue;
+	PriorityBlockingQueue<ScheduledJob> job_queue;
 	ArrayList<PeriodicJob> periodic_jobs;
 	
 	long prev_time;
 	
 	Scheduler(Server server){
 		super("Scheduler");
-		job_queue = new PriorityQueue<ScheduledJob>();
+		job_queue = new PriorityBlockingQueue<ScheduledJob>();
 		periodic_jobs = new ArrayList<PeriodicJob>();
 		prev_time = System.currentTimeMillis();
 		// this.database = server.database; FIXME: implement database.
@@ -46,9 +47,9 @@ public class Scheduler extends Thread {
 			}
 		}
 	}
-	// this can return null if no job is ready.
-	synchronized Job getNextJob(){
-		return job_queue.poll();
+	// this will block until a job is available.
+	synchronized Job getNextJob() throws InterruptedException {
+		return job_queue.take();
 	}
 }
 // class to use in the job_queue.
