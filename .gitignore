@@ -1,0 +1,5 @@
+# Ignore the bin folder
+/bin
+
+# Ignore any backup files
+*~

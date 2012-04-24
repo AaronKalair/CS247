@@ -1,1 +1,12 @@
-Testing agaCCin
+The repository for team 3's CS247 project.
+
+For help with out git workflow see this google doc:
+https://docs.google.com/document/d/1-HtXT8bjY4XAk1sygqj-aXl5Y3Wd0LCmI-QXJWHFfe8/edit
+
+
+To compile type "ant" in a terminal at the CS247 folder
+
+To clean up any files created by ant type: "ant clean" at the CS247 folder
+
+
+Be sure to create a issue and assign yourself to it before starting work to ensure everyone knows what your doing !
