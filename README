@@ -8,8 +8,14 @@ To compile type "ant" in a terminal at the CS247 folder
 
 To clean up any files created by ant type: "ant clean" at the CS247 folder
 
+To run the server: java -jar bin/server.jar 
+
+To run the client: java -jar bin/client.jar 
+
+
 
 To edit our database structure use the database.sql file in /scripts
+
 To build our database structure on your own machine run the contents of the file as an SQL command on a database called CS247
 
 
