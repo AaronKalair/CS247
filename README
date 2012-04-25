@@ -9,4 +9,8 @@ To compile type "ant" in a terminal at the CS247 folder
 To clean up any files created by ant type: "ant clean" at the CS247 folder
 
 
+To edit our database structure use the database.sql file in /scripts
+To build our database structure on your own machine run the contents of the file as an SQL command on a database called CS247
+
+
 Be sure to create a issue and assign yourself to it before starting work to ensure everyone knows what your doing !
