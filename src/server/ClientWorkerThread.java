@@ -6,16 +6,18 @@ import java.net.*;
 
 public class ClientWorkerThread extends Thread {
 
-	Socket connection;
-	InputStream input;
-	OutputStream output;
-	boolean results_pending;
-	Scheduler scheduler;
+	private final Socket connection;
+	private InputStream input;
+	private OutputStream output;
+	private final Scheduler scheduler;
+	private final ResultsThread results_thread;
+	private boolean results_pending;
 
 	ClientWorkerThread(Socket connection, Server server) {
 		super("ClientWorkerThread");
 		this.connection = connection;
 		this.scheduler = server.scheduler;
+		this.results_thread = server.results_thread;
 		results_pending = false;
 		try {
 			input = connection.getInputStream();
@@ -32,31 +34,22 @@ public class ClientWorkerThread extends Thread {
 			if(results_pending){
 				try {
 					Result r = Result.deserialize(input);
-					System.out.println(r.str);
+					results_thread.addResult(r);
 				} catch(IOException e){
-					e.printStackTrace();
+					System.out.println("[Client removed] " + e.getMessage());
 					// return here to end this thread, since the connection is broken.
 					return;
 				}
 				results_pending = false;
 			} else {
 				// get the next job from the scheduler, this will block until one is available.
-				Job j = null;
-				try {
-					j = scheduler.getNextJob();
-				} catch (InterruptedException e){
-					// if the scheduler was interrupted, skip over serializing.
-					e.printStackTrace();
-					continue;
-				}
+				Job j = scheduler.getNextJob();
 				// serialize it and send it to our client.
 				byte[] b = j.serialize();
 				try {
 					output.write(b);
-					output.flush();
 				} catch(IOException e){
-					e.printStackTrace();
-					System.out.println("Client removed.");
+					System.out.println("[Client removed] " + e.getMessage());
 					// return here to end this thread, since the connection is broken.
 					return;
 				}

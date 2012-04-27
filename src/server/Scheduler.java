@@ -6,10 +6,9 @@ import java.util.concurrent.*;
 public class Scheduler extends Thread {
 	
 	// job_queue holds the jobs that are ready to be sent to clients.
-	PriorityBlockingQueue<ScheduledJob> job_queue;
-	ArrayList<PeriodicJob> periodic_jobs;
-	
-	long prev_time;
+	private PriorityBlockingQueue<ScheduledJob> job_queue;
+	private ArrayList<PeriodicJob> periodic_jobs;
+	private long prev_time;
 	
 	Scheduler(Server server){
 		super("Scheduler");
@@ -33,6 +32,7 @@ public class Scheduler extends Thread {
 			// update the countdown for all the periodic jobs,
 			// adding them to the job_queue if the countdown is <= 0, and resetting it.
 			for(PeriodicJob p : periodic_jobs){
+				if(job_queue.contains(p)) continue;
 				p.countdown -= delta;
 				if(p.countdown <= 0){
 					job_queue.add(p);
@@ -48,8 +48,18 @@ public class Scheduler extends Thread {
 		}
 	}
 	// this will block until a job is available.
-	synchronized Job getNextJob() throws InterruptedException {
-		return job_queue.take();
+	synchronized Job getNextJob() {
+		while(true){	
+			try {
+				return job_queue.take();
+			} catch(InterruptedException e){
+				continue;
+			}
+		}
+	}
+	
+	void addJob(Job j) throws InterruptedException {
+		job_queue.put(new ScheduledJob(j, 10));
 	}
 }
 // class to use in the job_queue.
@@ -59,7 +69,11 @@ class ScheduledJob extends Job implements Comparable<ScheduledJob> {
 	
 	ScheduledJob(int priority, byte type, String url){
 		super(type, url);
-		
+		this.priority = priority;
+	}
+	
+	ScheduledJob(Job j, int priority){
+		super(j);
 		this.priority = priority;
 	}
 	

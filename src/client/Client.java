@@ -46,6 +46,7 @@ public class Client {
 			Job j = job_factory.makeJob(input);
 			Result r = j.execute();
 			output.write(r.serialize());
+			output.flush();
 		} catch(IOException e){
 			e.printStackTrace();
 			// should probably try reconnecting here.

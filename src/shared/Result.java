@@ -35,6 +35,7 @@ class Result {
 		in.read(b, 0, 2);
 		buffer = ByteBuffer.wrap(b);
 		short size = buffer.getShort();
+		if(size <= 0) throw new IOException("Invalid result packet");
 		// now read that length into the buffer.
 		b = new byte[size];
 		in.read(b, 0, size);
@@ -43,7 +44,7 @@ class Result {
 			String str = new String(b, "US-ASCII");
 			r = new Result(str);
 		} catch(UnsupportedEncodingException e){
-			throw new RuntimeException("URLs and Parameters must be ASCII! Can't deserialize.", e);
+			throw new IOException("Invalid result packet", e);
 		}
 		return r;
 	}

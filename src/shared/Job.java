@@ -83,6 +83,7 @@ public class Job {
 		in.read(b, 0, 2);
 		buffer = ByteBuffer.wrap(b);
 		short size = buffer.getShort();
+		if(size <= 0) throw new IOException("Invalid job packet");
 		b = new byte[size];
 		in.read(b, 0, size);
 		buffer = ByteBuffer.wrap(b);
@@ -98,7 +99,7 @@ public class Job {
 				String p_str = new String(param, "US-ASCII");
 				j.addParam(p_str);
 			} catch(UnsupportedEncodingException e){
-				throw new RuntimeException("URLs and Parameters must be ASCII! Can't deserialize.", e);
+				throw new IOException("Invalid job packet.", e);
 			}
 		}
 		return j;
