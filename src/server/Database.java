@@ -103,5 +103,23 @@ public class Database {
         }     
  
     }
+    
+    public void removeIP(String ip) {
+    
+        PreparedStatement deleteStatement = null;        
+        String IpToDelete = "DELETE FROM ip_whitelist WHERE ip_address = ?";
+        
+        try {
+        
+            deleteStatement = conn.prepareStatement(IpToDelete);
+            deleteStatement.setString(1, ip);
+            deleteStatement.executeUpdate();
+        }
+        
+        catch (Exception e) {
+           e.printStackTrace();
+        }
+        
+    }
 
 }
