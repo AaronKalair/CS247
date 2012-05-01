@@ -196,11 +196,11 @@ public class Database {
 
     }
     
-    /* Gets an alert from the android_alerts table by its ID.
+    /* Gets an alert from the android_alerts table by its ID as an array
      * @param id The id of the alert you want to get
      * @return array representing part of the row returned 0 = Title, 1 = Link, 2 = Description, 3 = Suggestions
      */
-   public String[] getAlertByID(int alert_id) {
+   public String[] getAlertByIDAsArray(int alert_id) {
         
         PreparedStatement getAlert = null;
         ResultSet rs = null;
@@ -227,6 +227,56 @@ public class Database {
         return Results;        
 
     } 
+    
+    /* Gets an alert from the android_alerts table by its ID as a result set object
+     * @param id The id of the alert you want to get
+     * @return ResultSet representing all the rows returned 1 = Alert ID, 2 = Title, 3 = Link, 4 = Description, 5 = Suggestions
+     */
+    public ResultSet getAlertByIDAsResultSetObject(int alert_id) {
+        
+        PreparedStatement getAlert = null;
+        ResultSet rs = null;
+        
+        String alertToGet = "SELECT * FROM android_alerts WHERE alert_id = ? ";
+        
+        try {
+            getAlert = conn.prepareStatement(alertToGet);
+            getAlert.setInt(1, alert_id);
+            rs = getAlert.executeQuery();
+        }
+        
+        catch (Exception e) {
+           e.printStackTrace();
+        }
+        
+        return rs;    
+
+    }
+    
+    /* Gets all alerts from the android_alerts table that were created after the timestamp passed in
+     * @param timestamp Timestamp in the format YYYY-MM-DD HH:MM:SS  
+     * @return ResultSet representing the rows returned 1 = Alert ID, 2 = Title, 3 = Link, 4 = Description, 5 = Suggestions
+     */
+    public ResultSet getAllAlertsSinceXAsResultSetObject(String timestamp) {
+        
+        PreparedStatement getAlerts = null;
+        ResultSet rs = null;
+        
+        String alertsToGet = "SELECT * FROM android_alerts WHERE time_stamp >= ? ";
+        
+        try {
+            getAlerts = conn.prepareStatement(alertsToGet);
+            getAlerts.setString(1, timestamp);
+            rs = getAlerts.executeQuery();
+        }
+        
+        catch (Exception e) {
+           e.printStackTrace();
+        }
+        
+        return rs;    
+
+    }
     
 
 }
