@@ -47,7 +47,9 @@ public class Database {
         }
     }
     
-    // Inserts a IP into the ip_whitelist table
+    /* Inserts a IP into the ip_whitelist table
+     * @param ip String representation of the IP to insert e.g. 192.156.454.5
+     */
     public void insertIP(String ip) {
             
         PreparedStatement addIP = null;
@@ -66,7 +68,10 @@ public class Database {
     
     }
     
-    // Checks if a given IP is in the ip_whitelist table
+    /* Inserts a IP into the ip_whitelist table
+     * @param ip String representation of the IP to check for e.g. 192.156.454.5
+     * @return true if the IP is in the table, false otherwise
+     */
     public boolean validIP(String ip) {
     
         PreparedStatement checkIP = null;
@@ -104,6 +109,9 @@ public class Database {
  
     }
     
+    /* Removes a IP from the ip_whitelist table
+     * @param ip String representation of the IP to remove e.g. 192.156.454.5
+     */
     public void removeIP(String ip) {
     
         PreparedStatement deleteStatement = null;        
@@ -121,5 +129,104 @@ public class Database {
         }
         
     }
+    
+    /* Inserts an alert into the android_alerts table
+     * @param title The title of the alert
+     * @param link The link to the source of the alert
+     * @param importance A integer representing how important this alert is, pass in -1 if you do not want to use this parameter
+     */
+    public void insertAlert(String title, String link, int importance) {
+        
+        PreparedStatement addAlert = null;
+        
+        String insertAlert = "INSERT INTO android_alerts (title, link, importance) values(?, ?, ?)";
+        
+        try {
+            addAlert = conn.prepareStatement(insertAlert);
+            addAlert.setString(1, title);
+            addAlert.setString(2, link);
+            addAlert.setInt(3, importance);
+            addAlert.executeUpdate();
+        }
+        
+        catch (Exception e) {
+           e.printStackTrace();
+        }
+    
+    }
+    
+    /* Inserts an alert into the android_alerts table
+     * @param title The title of the alert
+     * @param link The link to the source of the alert
+     * @param description The main body of text about this alert.
+     * @param suggestions What we think they should do based on this alert
+     * @param importance A integer representing how important this alert is, pass in -1 if you do not want to use this parameter
+     * @return the id of the alert that was inserted.
+     */
+    public int insertAlert(String title, String link, String description, String suggestions, int importance) {
+        
+        PreparedStatement addAlert = null;
+        int alert_id = -5;
+        
+        String insertAlert = "INSERT INTO android_alerts (title, link, description, suggestions, importance) values(?, ?, ?, ? , ?)";
+        
+        try {
+            // Get it to return the value of the alert_id column
+            addAlert = conn.prepareStatement(insertAlert, new String[]{"alert_id"});
+            addAlert.setString(1, title);
+            addAlert.setString(2, link);
+            addAlert.setString(3, description);
+            addAlert.setString(4, suggestions);
+            addAlert.setInt(5, importance);
+            addAlert.executeUpdate();
+            // Get the returned value
+            ResultSet rs = addAlert.getGeneratedKeys();
+            // Move the pointer to the start of the results
+            rs.next();
+            // Get the alert_id value
+            alert_id = rs.getInt(1);
+            
+        }
+        
+        catch (Exception e) {
+           e.printStackTrace();
+        }
+        
+        return alert_id;
+
+    }
+    
+    /* Gets an alert from the android_alerts table by its ID.
+     * @param id The id of the alert you want to get
+     * @return array representing part of the row returned 0 = Title, 1 = Link, 2 = Description, 3 = Suggestions
+     */
+   public String[] getAlertByID(int alert_id) {
+        
+        PreparedStatement getAlert = null;
+        ResultSet rs = null;
+        String[] Results = new String[4];
+        
+        String alertToGet = "SELECT * FROM android_alerts WHERE alert_id = ? ";
+        
+        try {
+            getAlert = conn.prepareStatement(alertToGet);
+            getAlert.setInt(1, alert_id);
+            rs = getAlert.executeQuery();
+            // Move the pointer to the start of the results
+            rs.next();
+            Results[0] = rs.getString(2);
+            Results[1] = rs.getString(3);
+            Results[2] = rs.getString(4);
+            Results[3] = rs.getString(5);
+        }
+        
+        catch (Exception e) {
+           e.printStackTrace();
+        }
+        
+        return Results;        
+
+    } 
+    
 
 }
