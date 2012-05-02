@@ -6,6 +6,7 @@ import java.util.concurrent.*;
 public class ResultsThread extends Thread {
 	
 	private final Scheduler scheduler;
+	//private ResultsFactory results_factory; //FIXME: implement
 	private ArrayBlockingQueue<Result> results;
 
 	ResultsThread(Server server){
@@ -29,7 +30,10 @@ public class ResultsThread extends Thread {
 		while(true){
 			try {
 				Result r = results.take();
-				System.out.println(r.str);
+				// FIXME: use results_factory here.
+				if(r.type == Result.TEST){
+					System.out.println("Test job results.");
+				}
 			} catch(InterruptedException e){
 				e.printStackTrace();
 				continue;

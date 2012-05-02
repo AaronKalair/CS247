@@ -7,7 +7,8 @@ class TestJob extends Job {
 	}
 
 	Result execute(){
-		Result r = new Result("Test job results");
+		Result r = new Result(Result.TEST);
+		r.addParam("Testing!");
 		System.out.println("Test job executed.");
 		return r;
 	}
