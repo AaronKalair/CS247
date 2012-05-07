@@ -5,16 +5,15 @@ import java.util.concurrent.*;
 
 public class ResultsThread extends Thread {
 	
-	private final Scheduler scheduler;
-	//private ResultsFactory results_factory; //FIXME: implement
+	private Server server;
 	private ArrayBlockingQueue<Result> results;
 
 	ResultsThread(Server server){
-		this.scheduler = server.scheduler;
+		this.server = server;
 		results = new ArrayBlockingQueue<Result>(20);
 	}
 	
-	void addResult(Result r){
+	public void addResult(Result r){
 		while(true){
 			try {
 				results.put(r);
@@ -29,15 +28,28 @@ public class ResultsThread extends Thread {
 	public void run(){
 		while(true){
 			try {
-				Result r = results.take();
-				// FIXME: use results_factory here.
-				if(r.type == Result.TEST){
-					System.out.println("Test job results.");
+				Result r = makeResult(results.take());
+				if(r == null){
+					System.out.println("Recieved Invalid result.");
+					continue;
 				}
+				r.process();
 			} catch(InterruptedException e){
 				e.printStackTrace();
 				continue;
 			}
+		}
+	}
+	
+	private Result makeResult(Result in){
+		switch(in.type){
+			case Result.TEST: 
+				return new TestResult(in);
+			case Result.RSS:
+				return new RSSResult(in, server);
+			case Result.INVALID:
+			default:
+				return null;
 		}
 	}
 }

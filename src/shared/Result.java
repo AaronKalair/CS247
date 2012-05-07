@@ -8,6 +8,7 @@ class Result {
 	byte type;
 	ArrayList<String> params;
 	
+	public static final byte INVALID = -1;
 	public static final byte RSS = 0;
 	public static final byte TWITTER = 1;
 	public static final byte ALCHEMY_RELATION = 2;

@@ -14,6 +14,7 @@ public class Client {
 	public static void main(String[] args){
 		Client client = new Client(args);
 		while(client.run());
+		System.out.println("Client exiting.");
 	}
 
 	public Client(String[] args){
@@ -50,6 +51,7 @@ public class Client {
 		} catch(IOException e){
 			e.printStackTrace();
 			// should probably try reconnecting here.
+			return false;
 		}
 		return true;
 	}
