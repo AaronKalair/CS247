@@ -8,11 +8,10 @@ public class Job {
 	byte type;
 	ArrayList<String> params;
 	
+	public static final byte TEST = -2;
+	public static final byte INVALID = -1;
 	public static final byte RSS = 0;
-	public static final byte TWITTER = 1;
-	public static final byte ALCHEMY_RELATION = 2;
-	public static final byte ALCHEMY_SENTIMENT = 3;
-	public static final byte TEST = 4;
+	public static final byte WOLFRAM_ALPHA = 1;
 	
 	// this empty constructor is private since only the static deserialize method should need it.
 	private Job(){
