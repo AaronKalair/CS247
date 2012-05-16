@@ -1,6 +1,6 @@
 <project name="CS247" default="all" basedir=".">
 
-	<target name="all" depends="client,server,app"/>
+	<target name="all" depends="client,server"/>
 	
 	<target name="client" >
 		<mkdir dir="bin/client"/>
@@ -20,18 +20,16 @@
 		<jar jarfile="bin/server.jar" basedir="bin/server">
 			<manifest>
 				<attribute name="Main-Class" value="CS247.Server"/>
+				<attribute name="Class-Path" value="sqlitejdbc-v056.jar"/>
 			</manifest>
 		</jar>
 	</target>
-	
-	<target name="app">
-		<mkdir dir="bin/app"/>
-		<javac srcdir="src/app" destdir="bin/app" includeantruntime="false"/>
-		<jar jarfile="bin/app.jar" basedir="bin/app"/>
-	</target>
-	
+		
 	<target name="clean">
-		<delete dir="bin"/>
+		<delete dir="bin/server"/>
+		<delete dir="bin/client"/>
+		<delete file="bin/server.jar"/>
+		<delete file="bin/client.jar"/>
 	</target>
 	
 </project>

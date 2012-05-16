@@ -1,11 +1,12 @@
--- Run this script against your database that must be called CS247
-
+-- Run this script with the following command:
+-- sqlite3 bin/cs247.db < scripts/database.sql
 --
 -- Table structure for ip_whitelist
 --
 
 CREATE TABLE `ip_whitelist` (
-    `ip_address` varchar(16) NOT NULL PRIMARY KEY COMMENT 'IP address of a trusted client'
+	`ip_id` INTEGER PRIMARY KEY,
+    `ip_address` varchar(16) NOT NULL
 ); 
 
 --
@@ -13,11 +14,11 @@ CREATE TABLE `ip_whitelist` (
 --
 
 CREATE TABLE `android_alerts` (
-    `alert_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Unique ID for this alert',
-    `title` VARCHAR( 500 ) NOT NULL COMMENT 'The headline for this alert as it will appear on the phone',
-    `link` VARCHAR( 500 ) NOT NULL COMMENT 'A link to the source of information for this alert. E.g. a BBC news article',
-    `description` TEXT( 10000 ) NOT NULL COMMENT 'The main body of the alert. Details about the story.',
-    `suggestions` TEXT( 10000 ) NOT NULL COMMENT 'Our suggestions on what to do because of this alert.',
-    `importance` TINYINT NOT NULL COMMENT 'An indicator of the importance of this alert (optional)',
-    `time_stamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'The time this alert was added to the database'
+    `alert_id` INTEGER PRIMARY KEY,
+    `title` VARCHAR( 500 ) NOT NULL,
+    `link` VARCHAR( 500 ) NOT NULL,
+    `description` TEXT( 10000 ) NOT NULL,
+    `suggestions` TEXT( 10000 ) NOT NULL,
+    `importance` TINYINT NOT NULL,
+    `time_stamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

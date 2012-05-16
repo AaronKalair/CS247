@@ -10,6 +10,7 @@ public class Server {
 	ServerSocket socket;
 	Scheduler scheduler;
 	ResultsThread results_thread;
+	Database database;
 	ArrayList<String> whitelist;
 	Logger logger;
 
@@ -25,7 +26,7 @@ public class Server {
 		scheduler.start();
 		results_thread = new ResultsThread(this);
 		results_thread.start();
-		//database = new Database(); FIXME: implement database.
+		database = new Database();
 		// add localhost to the whitelist for testing purposes.
 		whitelist = new ArrayList<String>();
 		whitelist.add("127.0.0.1");

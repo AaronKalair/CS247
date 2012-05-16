@@ -1,39 +1,56 @@
 package CS247;
 
 import java.sql.*;
+import java.net.URLDecoder;
+import java.io.File;
 
 public class Database {
 
     private Connection conn;
     
-    // Connect to the database TODO: connection pooling
-    Database() {
+    private final String create_whitelist =
+    "CREATE TABLE IF NOT EXISTS`ip_whitelist` ("
+	+ "`ip_id` INTEGER PRIMARY KEY,"
+    + "`ip_address` varchar(16) NOT NULL);";
     
+    private final String create_alerts = 
+	"CREATE TABLE IF NOT EXISTS `android_alerts` ("
+    + "`alert_id` INTEGER PRIMARY KEY," 
+    + "`title` VARCHAR( 500 ) NOT NULL,"
+    + "`link` VARCHAR( 500 ) NOT NULL,"
+    + "`description` TEXT( 10000 ) NOT NULL,"
+    + "`suggestions` TEXT( 10000 ) NOT NULL,"
+    + "`importance` TINYINT NOT NULL,"
+    + "`time_stamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+    
+    // Connect to the database.
+    Database() {
         this.conn = null;
-        // Default port is 3306
-        String url = "jdbc:mysql://localhost:3306/";
-        // Make sure you have the CS247 database created or this wont work
-        String dbName = "CS247";
-        // Note: you'll need to download this from: http://dev.mysql.com/downloads/mirror.php?id=407252#mirrors and make sure its in your classpath
-        String driver = "com.mysql.jdbc.Driver";
-        // Our database credentials
-        String userName = "root"; 
-        // A super secure password
-        String password = "cs247";
         
+		// get the path of server.jar in order to store the db in the same directory.
+		String path = Server.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		try {
+			path = URLDecoder.decode(path, "UTF-8");
+			path = (new File(path)).getParentFile().getPath() + File.separator + "cs247.db";
+		} catch (Exception e){
+			path = "cs247.db";
+		}
+		
         // Actually connect to the database
+        // you will need to download http://files.zentus.com/sqlitejdbc/sqlitejdbc-v056.jar
+        // and place it in the bin/ directory.
         try {
-            Class.forName(driver).newInstance();
-            conn = DriverManager.getConnection(url+dbName,userName,password);
-            
-        } 
-          
-        catch (Exception e) {
+			Class.forName("org.sqlite.JDBC").newInstance();
+			conn = DriverManager.getConnection("jdbc:sqlite:" + path);
+			conn.setAutoCommit(true);
+			Statement stmnt = conn.createStatement();
+			stmnt.executeUpdate(create_whitelist);
+			stmnt.executeUpdate(create_alerts);
+			stmnt.close();
+        } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("You need to get http://files.zentus.com/sqlitejdbc/sqlitejdbc-v056.jar and place it in the bin/ folder!");
         }
-        
-        closeConnection(conn);
-   
     }
     
     // Not sure we need this, as we want to reuse connections ?
@@ -54,7 +71,7 @@ public class Database {
             
         PreparedStatement addIP = null;
         
-        String insertIP = "INSERT INTO ip_whitelist (ip_address) values(?)";
+        String insertIP = "INSERT INTO ip_whitelist values(NULL, ?)";
         
         try {
             addIP = conn.prepareStatement(insertIP);
@@ -76,7 +93,7 @@ public class Database {
     
         PreparedStatement checkIP = null;
         ResultSet results = null;
-        int numberOfResults = -100;
+        boolean res = false;
         
         String IpToCheck = "SELECT ip_address FROM ip_whitelist WHERE ip_address = ?";
         
@@ -87,26 +104,14 @@ public class Database {
             results = checkIP.executeQuery();
             
             // JavaDB has no way to find out the number of rows returned without itterating through them (yes really)
-            while ( results.next() ) {
-                String id = results.getString(1);
-            }
+            if(results.next()) res = true;
             
-            results.last();
-            numberOfResults = results.getRow();
-        }
-        
-        catch (Exception e) {
+            results.close();
+        } catch (Exception e) {
            e.printStackTrace();
         }
-
-        if( numberOfResults == 1) {
-            return true;
-        }
-        
-        else {
-            return false;
-        }     
- 
+	
+		return res; 
     }
     
     /* Removes a IP from the ip_whitelist table
@@ -139,7 +144,7 @@ public class Database {
         
         PreparedStatement addAlert = null;
         
-        String insertAlert = "INSERT INTO android_alerts (title, link, importance) values(?, ?, ?)";
+        String insertAlert = "INSERT INTO android_alerts (alert_id, title, link, importance) values(NULL, ?, ?, ?)";
         
         try {
             addAlert = conn.prepareStatement(insertAlert);
@@ -163,36 +168,28 @@ public class Database {
      * @param importance A integer representing how important this alert is, pass in -1 if you do not want to use this parameter
      * @return the id of the alert that was inserted.
      */
-    public int insertAlert(String title, String link, String description, String suggestions, int importance) {
+    public void insertAlert(String title, String link, String description, String suggestions, int importance) {
         
         PreparedStatement addAlert = null;
-        int alert_id = -5;
         
-        String insertAlert = "INSERT INTO android_alerts (title, link, description, suggestions, importance) values(?, ?, ?, ? , ?)";
+        String insertAlert = "INSERT INTO android_alerts (alert_id, title, link, description, suggestions, importance) values(NULL, ?, ?, ?, ? , ?)";
         
         try {
-            // Get it to return the value of the alert_id column
-            addAlert = conn.prepareStatement(insertAlert, new String[]{"alert_id"});
+            // can't return the value of the alert_id column with sqlite :/
+            addAlert = conn.prepareStatement(insertAlert);
             addAlert.setString(1, title);
             addAlert.setString(2, link);
             addAlert.setString(3, description);
             addAlert.setString(4, suggestions);
             addAlert.setInt(5, importance);
-            addAlert.executeUpdate();
-            // Get the returned value
-            ResultSet rs = addAlert.getGeneratedKeys();
-            // Move the pointer to the start of the results
-            rs.next();
-            // Get the alert_id value
-            alert_id = rs.getInt(1);
-            
+            addAlert.executeUpdate();            
         }
         
         catch (Exception e) {
            e.printStackTrace();
         }
         
-        return alert_id;
+       // return alert_id;
 
     }
     
@@ -213,11 +210,12 @@ public class Database {
             getAlert.setInt(1, alert_id);
             rs = getAlert.executeQuery();
             // Move the pointer to the start of the results
-            rs.next();
-            Results[0] = rs.getString(2);
-            Results[1] = rs.getString(3);
-            Results[2] = rs.getString(4);
-            Results[3] = rs.getString(5);
+            //rs.next();
+            Results[0] = rs.getString("title");
+            Results[1] = rs.getString("link");
+            Results[2] = rs.getString("description");
+            Results[3] = rs.getString("suggestions");
+            rs.close();
         }
         
         catch (Exception e) {
