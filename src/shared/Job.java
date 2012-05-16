@@ -12,6 +12,7 @@ public class Job {
 	public static final byte INVALID = -1;
 	public static final byte RSS = 0;
 	public static final byte WOLFRAM_ALPHA = 1;
+	public static final byte RELEVANCY = 2;
 	
 	// this empty constructor is private since only the static deserialize method should need it.
 	private Job(){

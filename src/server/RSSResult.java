@@ -2,21 +2,38 @@ package CS247;
 
 class RSSResult extends Result {
 	
+	private final ResultsThread results_thread;
 	private final Scheduler scheduler;
 	//private final Database database;
 
-	RSSResult(Result copy, Server server){
+	RSSResult(Result copy, ResultsThread rt){
 		super(copy);
-		this.scheduler = server.scheduler;	
+		this.results_thread = rt;
+		this.scheduler = rt.server.scheduler;
 	}
 	
 	@Override
 	void process(){
-		for(int i = 1; i <= params.size(); i += 2){
-			//TODO: check database for duplicate links.
-			//TODO: every second param is a description, send it to be checked for relevancy.
-			//Job j = new Job(Job.RELEVANT, params.get(i));
-			//scheduler.addJob(j); 
+		for(int i = 0; i <= params.size(); i += 3) {
+			String title = params.get(i);
+			String link = params.get(i+1);
+			String desc = params.get(i+2);
+			
+			if(results_thread.getConclusionByUrl(link) != null){
+				continue;
+			} else if(!link.equals("unavailable")){
+				Result r = new Result(Result.RSS);
+				r.addParam(title);
+				r.addParam(link);
+				r.addParam(desc);
+				
+				Conclusion c = new Conclusion(link, r);
+				results_thread.storeConclusion(c);
+				
+				Job j = new Job(Job.RELEVANCY, link);
+				j.addParam(desc);
+				scheduler.addJob(j);
+			}
 		}
 	}
 }

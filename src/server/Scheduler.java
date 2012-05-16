@@ -58,7 +58,7 @@ public class Scheduler extends Thread {
 		}
 	}
 	
-	void addJob(Job j) throws InterruptedException {
+	synchronized void addJob(Job j) {
 		job_queue.put(new ScheduledJob(j, 10));
 	}
 }

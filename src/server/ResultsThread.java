@@ -5,18 +5,20 @@ import java.util.concurrent.*;
 
 public class ResultsThread extends Thread {
 	
-	private Server server;
-	private ArrayBlockingQueue<Result> results;
+	final Server server;
+	private ArrayBlockingQueue<Result> results_in;
+	HashMap<String, Conclusion> conclusions;
 
 	ResultsThread(Server server){
 		this.server = server;
-		results = new ArrayBlockingQueue<Result>(20);
+		results_in = new ArrayBlockingQueue<Result>(20);
+		conclusions = new HashMap<String, Conclusion>();
 	}
 	
 	public void addResult(Result r){
 		while(true){
 			try {
-				results.put(r);
+				results_in.put(r);
 				break;
 			} catch(InterruptedException e){
 				e.printStackTrace();
@@ -28,7 +30,7 @@ public class ResultsThread extends Thread {
 	public void run(){
 		while(true){
 			try {
-				Result r = makeResult(results.take());
+				Result r = makeResult(results_in.take());
 				if(r == null){
 					System.out.println("Recieved Invalid result.");
 					continue;
@@ -41,12 +43,20 @@ public class ResultsThread extends Thread {
 		}
 	}
 	
+	public void storeConclusion(Conclusion c){
+		conclusions.put(c.url, c);
+	}
+	
+	public Conclusion getConclusionByUrl(String url){
+		return conclusions.get(url);
+	}
+	
 	private Result makeResult(Result in){
 		switch(in.type){
 			case Result.TEST: 
 				return new TestResult(in);
 			case Result.RSS:
-				return new RSSResult(in, server);
+				return new RSSResult(in, this);
 			case Result.INVALID:
 			default:
 				return null;
