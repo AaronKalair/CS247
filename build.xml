@@ -1,7 +1,7 @@
 <project name="CS247" default="all" basedir=".">
 
-	<target name="all" depends="client,server,app"/>
-	
+	<!-- <target name="all" depends="client,server,app"/> -->
+	<target name="all" depends="client,server"/>
 	<target name="client" >
 		<mkdir dir="bin/client"/>
 		<javac srcdir="src/shared" destdir="bin/client" includeantruntime="false"/>
@@ -24,11 +24,14 @@
 		</jar>
 	</target>
 	
+	<!--  Commented out by Aaron on 16th May. Android compiling handled by eclipse until I have time to make it work with this script.
+	    
+	
 	<target name="app">
 		<mkdir dir="bin/app"/>
 		<javac srcdir="src/app" destdir="bin/app" includeantruntime="false"/>
 		<jar jarfile="bin/app.jar" basedir="bin/app"/>
-	</target>
+	</target> -->
 	
 	<target name="clean">
 		<delete dir="bin"/>
