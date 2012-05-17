@@ -14,6 +14,7 @@ class Result {
 	public static final byte WOLFRAM_ALPHA = 1;
 	public static final byte RELEVANCY = 2;
 	public static final byte ALCHEMY_ENTITY = 3;
+	public static final byte ALCHEMY_SENTIMENT = 4;
 	
 	// this empty constructor is private since only the static deserialize method should need it.
 	private Result(){
