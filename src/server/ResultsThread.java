@@ -6,11 +6,13 @@ import java.util.concurrent.*;
 public class ResultsThread extends Thread {
 	
 	final Server server;
+	//private final Database database;
 	private ArrayBlockingQueue<Result> results_in;
 	HashMap<String, Conclusion> conclusions;
 
 	ResultsThread(Server server){
 		this.server = server;
+		//this.database = server.database;
 		results_in = new ArrayBlockingQueue<Result>(20);
 		conclusions = new HashMap<String, Conclusion>();
 	}
@@ -47,8 +49,12 @@ public class ResultsThread extends Thread {
 		conclusions.put(c.url, c);
 	}
 	
-	public Conclusion getConclusionByUrl(String url){
+	public Conclusion getConclusionByURL(String url){
 		return conclusions.get(url);
+	}
+	
+	public void addConclusionToDatabase(Conclusion c){
+		//TODO
 	}
 	
 	private Result makeResult(Result in){
@@ -57,6 +63,14 @@ public class ResultsThread extends Thread {
 				return new TestResult(in);
 			case Result.RSS:
 				return new RSSResult(in, this);
+			case Result.WOLFRAM_ALPHA:
+				return new WolframAlphaResult(in, this);
+			case Result.RELEVANCY:
+				return new RelevancyResult(in, this);
+			case Result.ALCHEMY_ENTITY:
+				return new AlchemyEntityResult(in, this);
+			case Result.ALCHEMY_SENTIMENT:
+				return new AlchemySentimentResult(in, this);
 			case Result.INVALID:
 			default:
 				return null;

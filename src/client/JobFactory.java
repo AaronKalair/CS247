@@ -12,8 +12,23 @@ public class JobFactory {
 		Job ret = null, j = Job.deserialize(in);
 		
 		switch(j.type){
-			default:
+			case Job.RSS:
+				ret = new RSSJob(j);
+			break;
+			case Job.WOLFRAM_ALPHA:
+				ret = new WolframAlphaJob(j);
+			break;
+			case Job.RELEVANCY:
+				ret = new RelevancyJob(j);
+			break;
+			case Job.ALCHEMY_ENTITY:
+				ret = new AlchemyEntityJob(j);
+			break;
+			case Job.ALCHEMY_SENTIMENT:
+				ret = new AlchemySentimentJob(j);
+			break;
 			case Job.TEST: 
+			default:
 				ret = new TestJob(j);
 			break;
 		}

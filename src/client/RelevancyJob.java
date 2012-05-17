@@ -1,10 +1,18 @@
 package CS247;
 
 /* 
-This job is used to determine whether a piece of source info is worth looking
-into further by matching it against keywords.
+	This job is used to determine whether a piece of source info is worth looking
+	into further by matching it against keywords.
 
-Currently it just does natural disasters, add more categories!
+	Currently it just does natural disasters, add more categories!
+
+	It should get two params from the server:
+	0 = the url.
+	1 = text to match against (description).
+
+	And it will return a result with two params:
+	0 = the url.
+	1 = a category that this is relevant to, or "none".
 */
 public class RelevancyJob extends Job {
 
@@ -27,10 +35,11 @@ public class RelevancyJob extends Job {
 		desc = params.get(1);
 
 		Result res = new Result(Result.RELEVANCY);
+		res.addParam(url);
 		
 		if(matchDisasters()){
 			// if it matches a natural disaster, we want to find out which country next.
-			res.addParam("country");
+			res.addParam("Country");
 		} else {
 			// otherwise it is not relevant.
 			res.addParam("none");
