@@ -1,5 +1,12 @@
 # Ignore the bin folder
 /bin
 
+# Ignore android binary dirs
+/src/app/bin
+/src/app/gen
+
+# this file says to not include it in version control
+/src/app/local.properties
+
 # Ignore any backup files
 *~

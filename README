@@ -3,20 +3,15 @@ The repository for team 3's CS247 project.
 For help with out git workflow see this google doc:
 https://docs.google.com/document/d/1-HtXT8bjY4XAk1sygqj-aXl5Y3Wd0LCmI-QXJWHFfe8/edit
 
+To compile type "ant" in a terminal at the CS247 folder.
+To compile the app, type "ant app". For this to work, you must have run "android update project -p /path/to/CS247/src/app/" once.
 
-To compile type "ant" in a terminal at the CS247 folder
+To clean up any files created by ant type: "ant clean" at the CS247 folder.
 
-To clean up any files created by ant type: "ant clean" at the CS247 folder
-
-To run the server: java -jar bin/server.jar 
-
+To run the server: java -jar bin/server.jar
 To run the client: java -jar bin/client.jar 
 
-
-
-To edit our database structure use the database.sql file in /scripts
-
-To build our database structure on your own machine run the contents of the file as an SQL command on a database called CS247
-
+To edit our database structure use the database.sql file in /scripts.
+To build our database structure on your own machine run the contents of the file as an SQL command on a database called CS247.
 
 Be sure to create a issue and assign yourself to it before starting work to ensure everyone knows what your doing !

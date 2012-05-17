@@ -1,6 +1,5 @@
 <project name="CS247" default="all" basedir=".">
 
-	<!-- <target name="all" depends="client,server,app"/> -->
 	<target name="all" depends="client,server"/>
 	<target name="client" >
 		<mkdir dir="bin/client"/>
@@ -22,19 +21,18 @@
 				<attribute name="Main-Class" value="CS247.Server"/>
 			</manifest>
 		</jar>
-	</target>
-	
-	<!--  Commented out by Aaron on 16th May. Android compiling handled by eclipse until I have time to make it work with this script.
-	    
+	</target>  
 	
 	<target name="app">
-		<mkdir dir="bin/app"/>
-		<javac srcdir="src/app" destdir="bin/app" includeantruntime="false"/>
-		<jar jarfile="bin/app.jar" basedir="bin/app"/>
-	</target> -->
+		<ant antfile="src/app/build.xml" target="debug" inheritall="false"/>
+	</target>
 	
 	<target name="clean">
-		<delete dir="bin"/>
+		<delete dir="bin/server"/>
+		<delete dir="bin/client"/>
+		<delete file="bin/server.jar"/>
+		<delete file="bin/client.jar"/>
+		<ant antfile="src/app/build.xml" target="clean" inheritall="false"/>
 	</target>
 	
 </project>
