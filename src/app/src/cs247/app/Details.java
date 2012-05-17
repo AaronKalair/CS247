@@ -1,6 +1,10 @@
 package cs247.app;
 
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
 import org.w3c.dom.Text;
 
 import android.app.Activity;
@@ -27,7 +31,7 @@ public class Details extends Activity{
 		TextView tv = new TextView(this);
 		// Get the ID of the alert we want more info on or -1 if it failed to pass a value in
 		long item = getIntent().getLongExtra("alertid", -1);
-		
+				
 		if( item != -1 ) {
 			Cursor cursor = getDetails(item);
 			cursor.moveToFirst();

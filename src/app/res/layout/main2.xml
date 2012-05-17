@@ -27,13 +27,13 @@
         android:text="No Alerts" />
 
     <ImageView
-        android:id="@+id/red"
+        android:id="@+id/green"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
         android:padding="5dp"
-        android:src="@raw/red" />
+        android:src="@raw/green" />
 
 </RelativeLayout>
