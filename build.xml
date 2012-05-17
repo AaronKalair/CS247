@@ -1,5 +1,6 @@
 <project name="CS247" default="all" basedir=".">
 
+	
 	<target name="all" depends="client,server"/>
 	<target name="client" >
 		<mkdir dir="bin/client"/>
