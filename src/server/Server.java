@@ -8,6 +8,7 @@ import java.util.logging.*;
 public class Server {
 
 	ServerSocket socket;
+	AndroidServer androidServer;
 	Scheduler scheduler;
 	ResultsThread results_thread;
 	ArrayList<String> whitelist;
@@ -27,8 +28,10 @@ public class Server {
 		results_thread.start();
 		//database = new Database(); FIXME: implement database.
 		// add localhost to the whitelist for testing purposes.
+		androidServer = new AndroidServer(45587);
+		androidServer.start();
 		whitelist = new ArrayList<String>();
-		whitelist.add("127.0.0.1");
+		whitelist.add("192.168.1.86");
 	}
 	
 	boolean run() {
@@ -61,10 +64,27 @@ public class Server {
 		return true; //FIXME: add a server stop condition.
 	}
 	
+	private void dispose() {
+		
+		androidServer.dispose();
+		//dispose scheduler
+		//dispose results thread
+		//dispose database
+		try
+		{socket.close();}
+		catch (IOException e)
+		{logger.log(Level.WARNING, "Could not close server socket.");}
+		
+	}
+	
 	public static void main(String[] args){
 		Server server = new Server();
 		
 		while(server.run());
+		
+		server.dispose();
 	}
+
+
 
 }
