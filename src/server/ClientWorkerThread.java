@@ -7,8 +7,8 @@ import java.net.*;
 public class ClientWorkerThread extends Thread {
 
 	private final Socket connection;
-	private InputStream input;
-	private OutputStream output;
+	private DataInputStream input;
+	private DataOutputStream output;
 	private final Scheduler scheduler;
 	private final ResultsThread results_thread;
 	private boolean results_pending;
@@ -20,8 +20,8 @@ public class ClientWorkerThread extends Thread {
 		this.results_thread = server.results_thread;
 		results_pending = false;
 		try {
-			input = connection.getInputStream();
-			output = connection.getOutputStream();
+			input = new DataInputStream(connection.getInputStream());
+			output = new DataOutputStream(connection.getOutputStream());
 		} catch (IOException e){
 			e.printStackTrace();
 		}
@@ -45,10 +45,9 @@ public class ClientWorkerThread extends Thread {
 				// get the next job from the scheduler, this will block until one is available.
 				Job j = scheduler.getNextJob();
 				// serialize it and send it to our client.
-				byte[] b = j.serialize();
 				try {
-					output.write(b);
-				} catch(IOException e){
+					j.serialize(output);
+				} catch(Exception e){
 					System.out.println("[Client removed] " + e.getMessage());
 					// return here to end this thread, since the connection is broken.
 					return;

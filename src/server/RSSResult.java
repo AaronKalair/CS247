@@ -14,7 +14,8 @@ class RSSResult extends Result {
 	
 	@Override
 	void process(){
-		for(int i = 0; i <= params.size(); i += 3) {
+		System.out.println("RSS Results received with " +params.size() + " params.");
+		for(int i = 0; i < params.size(); i += 3) {
 			String title = params.get(i);
 			String link = params.get(i+1);
 			String desc = params.get(i+2);
@@ -29,9 +30,9 @@ class RSSResult extends Result {
 				
 				Conclusion c = new Conclusion(link, r);
 				results_thread.storeConclusion(c);
-				
+				System.out.println("adding relevancy job");
 				Job j = new Job(Job.RELEVANCY, link);
-				j.addParam(desc);
+				j.addParam(title + " " + desc);
 				scheduler.addJob(j);
 			}
 		}

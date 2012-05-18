@@ -11,6 +11,7 @@ public class ResultsThread extends Thread {
 	HashMap<String, Conclusion> conclusions;
 
 	ResultsThread(Server server){
+		super("ResultsThread");
 		this.server = server;
 		//this.database = server.database;
 		results_in = new ArrayBlockingQueue<Result>(20);
@@ -55,6 +56,7 @@ public class ResultsThread extends Thread {
 	
 	public void addConclusionToDatabase(Conclusion c){
 		//TODO
+		System.out.println("REACHED CONCLUSION:\n\t" + c.suggestion);
 	}
 	
 	private Result makeResult(Result in){
@@ -62,7 +64,8 @@ public class ResultsThread extends Thread {
 			case Result.TEST: 
 				return new TestResult(in);
 			case Result.RSS:
-				return new RSSResult(in, this);
+				return new TestResult(in);
+				//return new RSSResult(in, this);
 			case Result.WOLFRAM_ALPHA:
 				return new WolframAlphaResult(in, this);
 			case Result.RELEVANCY:

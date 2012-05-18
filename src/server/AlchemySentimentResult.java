@@ -26,6 +26,18 @@ class AlchemySentimentResult extends Result {
 				Job j = new Job(Job.WOLFRAM_ALPHA, url);
 				j.addParam(c.entity + "+export+commodities");
 			}
+			
+			if(c.category != null && c.category.equals("Stocks") && c.entity != null){
+				String invest_or_sell = "none";
+				
+				if(c.sentiment < 0){
+					invest_or_sell = "selling";
+				} else {
+					invest_or_sell = "investing in";
+				}
+				c.suggestion = "Consider " + invest_or_sell + " shares of " + c.entity + ".";
+				results_thread.addConclusionToDatabase(c);
+			}
 		}
 	}
 }

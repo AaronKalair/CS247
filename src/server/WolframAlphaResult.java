@@ -17,6 +17,8 @@ class WolframAlphaResult extends Result {
 		String url = params.get(0);
 		String res = params.get(1);
 		
+		System.out.println("WA result.");
+		
 		Conclusion c = results_thread.getConclusionByURL(url);
 		
 		if(c != null){

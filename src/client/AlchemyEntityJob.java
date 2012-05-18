@@ -63,8 +63,8 @@ class AlchemyEntityJob extends AlchemyJob {
 	
 	// static method for testing.
 	public static void main(String[] args){
-		AlchemyEntityJob j = new AlchemyEntityJob(new Job(Job.TEST, "http://www.bbc.co.uk/news/business-18098657"));
-		j.addParam("Country");
+		AlchemyEntityJob j = new AlchemyEntityJob(new Job(Job.TEST, "http://www.bbc.co.uk/news/business-18115914"));
+		j.addParam("Company");
 		Result r = j.execute();
 		System.out.println(r.params.get(1));
 	}

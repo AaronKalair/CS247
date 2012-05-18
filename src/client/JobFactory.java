@@ -8,7 +8,7 @@ public class JobFactory {
 		
 	}
 	
-	Job makeJob(InputStream in) throws IOException {
+	Job makeJob(DataInputStream in) throws IOException {
 		Job ret = null, j = Job.deserialize(in);
 		
 		switch(j.type){

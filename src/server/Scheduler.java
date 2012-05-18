@@ -19,7 +19,7 @@ public class Scheduler extends Thread {
 		// load periodic jobs from database.
 		// periodic_jobs.addAll(database.getPeriodicJobs());
 		// Add a job for testing purposes.
-		PeriodicJob p = new PeriodicJob(1000, Job.TEST, "Testing!");
+		PeriodicJob p = new PeriodicJob(500, Job.TEST, "http://feeds.bbci.co.uk/news/rss.xml");
 		periodic_jobs.add(p);
 	}
 	
@@ -48,7 +48,7 @@ public class Scheduler extends Thread {
 		}
 	}
 	// this will block until a job is available.
-	synchronized Job getNextJob() {
+	Job getNextJob() {
 		while(true){	
 			try {
 				return job_queue.take();
@@ -58,7 +58,7 @@ public class Scheduler extends Thread {
 		}
 	}
 	
-	synchronized void addJob(Job j) {
+	void addJob(Job j) {
 		job_queue.put(new ScheduledJob(j, 10));
 	}
 }
@@ -91,6 +91,6 @@ class PeriodicJob extends ScheduledJob {
 		super(100, type, url);
 		
 		this.interval = interval;
-		this.countdown = interval;
+		this.countdown = 1000;
 	}
 }

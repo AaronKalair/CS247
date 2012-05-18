@@ -17,8 +17,13 @@ package CS247;
 public class RelevancyJob extends Job {
 
 	// strings to match natural disasters, two sets to reduce false positives.
-	private static String[] disasters1 = { "tsunami", "flood", "earthquake", "volcano", "explosion" };
-	private static String[] disasters2 = { "devastate", "kill", "destroy", "richter" };
+	private static final String[] disasters1 = { "tsunami", "flood", "earthquake", "volcano", "explosion" };
+	private static final String[] disasters2 = { "devastate", "kill", "destroy", "richter" };
+	// strings to match stock market related stuff.
+	private static final String[] stocks1 = { "stocks", "shares", "trade", "trading" };
+	private static final String[] stocks2 = { "AAPL", "MSFT", "FTSE", "NASDAQ", "stock market", "share price" };
+	
+	private static final boolean debug = true;
 	
 	String url;
 	String desc;
@@ -37,24 +42,30 @@ public class RelevancyJob extends Job {
 		Result res = new Result(Result.RELEVANCY);
 		res.addParam(url);
 		
-		if(matchDisasters()){
+		if(match2(disasters1, disasters2)){
 			// if it matches a natural disaster, we want to find out which country next.
+			if(debug) System.out.println("Relevant to Country.");
 			res.addParam("Country");
+		} else if(match2(stocks1, stocks2)){
+			// if it matches stocks, set the result accordingly.
+			if(debug) System.out.println("Relevant to Stocks.");
+			res.addParam("Stocks");
 		} else {
 			// otherwise it is not relevant.
+			if(debug) System.out.println("not relevant.");
 			res.addParam("none");
 		}
 		return res;
 	}
 	
-	// match against the natural disaster strings, it must have atleast one word from each list.
-	private boolean matchDisasters(){
+	// match against 2 sets of strings, it must have atleast one word from each list.
+	private boolean match2(String[] one, String[] two){
 		boolean stage2 = false;
-		for(String s : disasters1){
+		for(String s : one){
 			if(desc.toLowerCase().contains(s)) stage2 = true;
 		}
 		if(!stage2) return false;
-		for(String s : disasters2){
+		for(String s : two){
 			if(desc.toLowerCase().contains(s)) return true;
 		}
 		return false;

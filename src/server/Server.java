@@ -31,6 +31,7 @@ public class Server {
 		androidServer = new AndroidServer(45587);
 		androidServer.start();
 		whitelist = new ArrayList<String>();
+		whitelist.add("127.0.0.1");
 		whitelist.add("192.168.1.86");
 	}
 	

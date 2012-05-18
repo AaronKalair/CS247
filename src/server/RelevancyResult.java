@@ -23,10 +23,20 @@ class RelevancyResult extends Result {
 			c.category = category;
 			// if this url is relevant to countries, get the sentiment.
 			if(category.equals("Country")){
+				System.out.println("adding alchemy entity job.");
 				Job j = new Job(Job.ALCHEMY_ENTITY, url);
 				j.addParam("Country");
 				
 				scheduler.addJob(j);
+			}
+			// for stocks, get the most relevant company.
+			if(category.equals("Stocks")){
+				System.out.println("adding alchemy entity job. " + url);
+				Job j = new Job(Job.ALCHEMY_ENTITY, url);
+				j.addParam("Company");
+				
+				scheduler.addJob(j);
+				System.out.println("added.");
 			}
 		}
 	}

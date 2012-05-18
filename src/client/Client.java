@@ -8,8 +8,8 @@ public class Client {
 
 	Socket connection;
 	JobFactory job_factory;
-	InputStream input;
-	OutputStream output;
+	DataInputStream input;
+	DataOutputStream output;
 
 	public static void main(String[] args){
 		Client client = new Client(args);
@@ -34,8 +34,8 @@ public class Client {
 		try {
 			// connect to the server, FIXME: choose port.
 			connection = new Socket(server_addr, 12345);
-			input = connection.getInputStream();
-			output = connection.getOutputStream();
+			input = new DataInputStream(connection.getInputStream());
+			output = new DataOutputStream(connection.getOutputStream());
 		} catch (IOException e){
 			throw new RuntimeException("Can't connect to host!", e);
 		}
@@ -46,8 +46,7 @@ public class Client {
 		try {	
 			Job j = job_factory.makeJob(input);
 			Result r = j.execute();
-			output.write(r.serialize());
-			output.flush();
+			r.serialize(output);
 		} catch(IOException e){
 			e.printStackTrace();
 			// should probably try reconnecting here.
