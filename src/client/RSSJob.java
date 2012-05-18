@@ -36,8 +36,7 @@ class RSSJob extends XMLJob {
 		if(ret != null) return ret;
 		try {
 			// start parsing the XML returned.
-			File f = new File("/home/alex/Desktop/bbc.xml");
-			parser.parse(f, handler);
+			parser.parse(url, handler);
 			// get the result after parsing.
 			ret = handler.result;
 		} catch(Throwable e){
