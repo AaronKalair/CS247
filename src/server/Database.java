@@ -278,5 +278,33 @@ public class Database {
 
     }
     
-
+    public boolean insertRegistrationID(String reg)
+    {
+        PreparedStatement addID = null;
+        try
+        {
+            addID = conn.prepareStatement("INSERT INTO android_devices (registration_id) values (?)");
+            addID.setString(1, reg);
+            addID.executeUpdate();
+        }
+        catch (Exception e)
+        {return false;}
+        
+        return true;
+    }
+    
+    public boolean removeRegistrationID(String reg)
+    {
+        PreparedStatement delID = null;
+        try
+        {
+            delID = conn.prepareStatement("DELETE FROM android_devices WHERE `registration_id` = ?");
+            delID.setString(1, reg);
+            delID.executeUpdate();
+        }
+        catch (Exception e)
+        {return false;}
+        
+        return true;
+    }
 }

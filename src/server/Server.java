@@ -11,8 +11,8 @@ public class Server {
 	AndroidServer androidServer;
 	Scheduler scheduler;
 	ResultsThread results_thread;
-	ArrayList<String> whitelist;
 	Logger logger;
+	private final Database database;
 
 	Server(){
 		// create the listening socket, FIXME: choose port number.
@@ -26,13 +26,9 @@ public class Server {
 		scheduler.start();
 		results_thread = new ResultsThread(this);
 		results_thread.start();
-		//database = new Database(); FIXME: implement database.
-		// add localhost to the whitelist for testing purposes.
-		androidServer = new AndroidServer(45587);
+		database = new Database();
+		androidServer = new AndroidServer(45587, database);
 		androidServer.start();
-		whitelist = new ArrayList<String>();
-		whitelist.add("127.0.0.1");
-		whitelist.add("192.168.1.86");
 	}
 	
 	boolean run() {
@@ -50,7 +46,7 @@ public class Server {
 		// FIXME: maybe make this work with hostnames instead of ip addresses?
 		String ip = connection.getInetAddress().getHostAddress();
 		// create a new worker if this ip is whitelisted, print a warning otherwise.
-		if(whitelist.contains(ip)){
+		if(database.validIP(ip)){
 			logger.log(Level.INFO, "new client from " + ip);
 			ClientWorkerThread cwt = new ClientWorkerThread(connection, this);
 			cwt.start();
