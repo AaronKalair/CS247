@@ -19,7 +19,7 @@ public class Scheduler extends Thread {
 		// load periodic jobs from database.
 		// periodic_jobs.addAll(database.getPeriodicJobs());
 		// Add a job for testing purposes.
-		PeriodicJob p = new PeriodicJob(500, Job.TEST, "http://feeds.bbci.co.uk/news/rss.xml");
+		PeriodicJob p = new PeriodicJob(100000, Job.RSS, "http://feeds.bbci.co.uk/news/rss.xml");
 		periodic_jobs.add(p);
 	}
 	

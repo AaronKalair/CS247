@@ -102,11 +102,6 @@ class RSSHandler extends DefaultHandler {
 		}
 		if(current_element.equals("link")){
 			item.link += (new String(ch, start, length)).replaceAll("(\\r|\\n)", "");
-			try {
-				item.link = URLEncoder.encode(item.link, "ASCII");
-			} catch(Exception e){
-				item.link = "unavailable";
-			}
 		}
 		if(current_element.equals("description")){
 			item.desc += (new String(ch, start, length)).replaceAll("(\\r|\\n)", "");
@@ -129,6 +124,11 @@ class RSSHandler extends DefaultHandler {
 			for(RSSInfo i : rss_items){
 				if(debug) System.out.printf("T: %s\nL: %s\nD: %s\n", i.title, i.link, i.desc);
 				result.addParam(i.title);
+				try {
+					i.link = URLEncoder.encode(i.link, "UTF-8");
+				} catch(Exception e){
+					i.link = "unavailable";
+				}
 				result.addParam(i.link);
 				result.addParam(i.desc);
 			}

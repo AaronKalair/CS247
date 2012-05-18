@@ -34,8 +34,8 @@ public class Client {
 		try {
 			// connect to the server, FIXME: choose port.
 			connection = new Socket(server_addr, 12345);
-			input = new DataInputStream(connection.getInputStream());
-			output = new DataOutputStream(connection.getOutputStream());
+			input = new DataInputStream(new BufferedInputStream(connection.getInputStream()));
+			output = new DataOutputStream(new BufferedOutputStream(connection.getOutputStream()));
 		} catch (IOException e){
 			throw new RuntimeException("Can't connect to host!", e);
 		}

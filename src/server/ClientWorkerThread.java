@@ -20,8 +20,8 @@ public class ClientWorkerThread extends Thread {
 		this.results_thread = server.results_thread;
 		results_pending = false;
 		try {
-			input = new DataInputStream(connection.getInputStream());
-			output = new DataOutputStream(connection.getOutputStream());
+			input = new DataInputStream(new BufferedInputStream(connection.getInputStream()));
+			output = new DataOutputStream(new BufferedOutputStream(connection.getOutputStream()));
 		} catch (IOException e){
 			e.printStackTrace();
 		}
