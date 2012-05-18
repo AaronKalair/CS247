@@ -1,14 +1,6 @@
 package CS247;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.*;
-
-import java.util.*;
-import java.io.*;
-
 /* 
 	A job for getting Entities from Alchemy.
    it must be sent two parameters from the server:
@@ -22,20 +14,13 @@ import java.io.*;
 class AlchemyEntityJob extends AlchemyJob {
 		
 	String url;
-	SAXParser parser;
 	AlchemyEntityHandler handler;
-	Result ret = null;
 	
 	AlchemyEntityJob(Job copy){
 		super(copy);
 		
 		try {
 			url = "http://access.alchemyapi.com/calls/url/URLGetRankedNamedEntities?url=" + params.get(0) + "&apikey=" + api_key;
-			// setup XML parsing stuff.
-			SAXParserFactory factory = SAXParserFactory.newInstance();
-			factory.setNamespaceAware(true);
-			factory.setValidating(true);
-			parser = factory.newSAXParser();
 		} catch(Throwable e){
 			e.printStackTrace();
 			ret = new Result(Result.INVALID);
