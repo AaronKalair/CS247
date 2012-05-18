@@ -8,7 +8,13 @@ import org.xml.sax.*;
 
 import java.util.*;
 import java.io.*;
+import java.net.URLEncoder;
 
+/* 
+	A job to parse RSS feeds.
+	It requies one param from the server: the url.
+	And it returns a result with all the titles, links and descriptions in that order.
+*/
 class RSSJob extends Job {
 
 	String url;
@@ -32,7 +38,7 @@ class RSSJob extends Job {
 			ret = new Result(Result.INVALID);
 		}
 		// create the RSSHandler, as shown below.
-		handler = new RSSHandler(type == 0 ? true : false);
+		handler = new RSSHandler(type == Job.TEST ? true : false);
 	}
 	
 	Result execute(){
@@ -91,23 +97,28 @@ class RSSHandler extends DefaultHandler {
 	// this method is called with the characters between an xml start / end tag.
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		// add titles, links and descriptions to our list of rss_items.
-		if(current_element.equals("title")){
-			item.title += (new String(ch, start, length)).replaceAll("(\\r|\\n)", "");
+		if(current_element.equals("title") && item.title == null){
+			item.title = (new String(ch, start, length)).replaceAll("(\\r|\\n)", "");
 		}
-		if(current_element.equals("link")){
-			item.link += (new String(ch, start, length)).replaceAll("(\\r|\\n)", "");
+		if(current_element.equals("link") && item.link == null){
+			item.link = (new String(ch, start, length)).replaceAll("(\\r|\\n)", "");
+			try {
+				item.link = URLEncoder.encode(item.link, "ASCII");
+			} catch(Exception e){
+				item.link = "unavailable";
+			}
 		}
-		if(current_element.equals("description")){
-			item.desc += (new String(ch, start, length)).replaceAll("(\\r|\\n)", "");
+		if(current_element.equals("description") && item.desc == null){
+			item.desc = (new String(ch, start, length)).replaceAll("(\\r|\\n)", "");
 		}
 	}
 	// this method is called for every xml end tag i.e. </item>
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
 		if(localName.equals("item")){
 			// if any of the three pieces of info are missing, add some sane values.
-			if(item.title.equals("")) item.title = "untitled";
-			if(item.link.equals("")) item.link = "unavailable";
-			if(item.desc.equals("")) item.desc = "unavailable";
+			if(item.title == null) item.title = "untitled";
+			if(item.link == null) item.link = "unavailable";
+			if(item.desc == null) item.desc = "unavailable";
 			
 			rss_items.add(item);
 		}
@@ -131,6 +142,6 @@ class RSSInfo {
 	String link;
 	String desc;
 	RSSInfo(){
-		title = link = desc = "";
+		title = link = desc = null;
 	}
 }

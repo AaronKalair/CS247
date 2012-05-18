@@ -8,6 +8,8 @@ class Conclusion {
 	String url;
 	// category of what this conclusion is relevant to: e.g. country, stock markets, e.t.c
 	String category;
+	// result of entity extraction.
+	String entity;
 	// value of sentiment analysis.
 	Float sentiment;
 	// result that let to this conclusion.
@@ -16,6 +18,8 @@ class Conclusion {
 	Conclusion(String url, Result result){
 		sentiment = null;
 		suggestion = null;
+		entity = null;
+		category = null;
 		this.url = url;
 		this.result = result;
 	}

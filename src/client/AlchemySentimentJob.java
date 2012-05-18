@@ -9,12 +9,14 @@ import org.xml.sax.*;
 import java.util.*;
 import java.io.*;
 
-/* A job for getting sentiment from Alchemy.
+/* 
+	A job for getting sentiment from Alchemy.
    it must be sent one parameter from the server:
    0 = the url to tell Alchemy to parse.
    
-   It will return a result which has one param:
-   0 = A String representation of a float between -1 and 1.
+   It will return a result which has two params:
+   0 = the url.
+   1 = A String representation of a float between -1 and 1.
 */
 class AlchemySentimentJob extends AlchemyJob {
 		
@@ -43,7 +45,7 @@ class AlchemySentimentJob extends AlchemyJob {
 		// if ret is not null then there has been an error, return the invalid result.
 		if(ret != null) return ret;
 		try {
-			handler = new AlchemySentimentHandler();
+			handler = new AlchemySentimentHandler(params.get(0));
 			// start parsing the XML returned.
 			parser.parse(url, handler);
 			// get the result after parsing.
@@ -60,7 +62,7 @@ class AlchemySentimentJob extends AlchemyJob {
 	public static void main(String[] args){
 		AlchemySentimentJob j = new AlchemySentimentJob(new Job(Job.TEST, "http://www.bbc.co.uk/news/business-18098657"));
 		Result r = j.execute();
-		System.out.println(r.params.get(0));
+		System.out.println(r.params.get(1));
 	}
 }
 
@@ -68,10 +70,12 @@ class AlchemySentimentJob extends AlchemyJob {
 class AlchemySentimentHandler extends DefaultHandler {
 
 	Result result;
+	String url;
 	String current_element;
 	boolean done;
 	
-	AlchemySentimentHandler(){
+	AlchemySentimentHandler(String url){
+		this.url = url;
 		done = false;
 		current_element = "none";
 		result = null;
@@ -89,6 +93,7 @@ class AlchemySentimentHandler extends DefaultHandler {
 		if(current_element.equals("score")){
 			String text = new String(ch, start, length);
 			result = new Result(Result.ALCHEMY_SENTIMENT);
+			result.addParam(url);
 			result.addParam(text);
 			done = true;
 		}
@@ -100,6 +105,7 @@ class AlchemySentimentHandler extends DefaultHandler {
 		// if we're at the end of the file with no result, set the sentiment to 0.
 		if(!done && localName.equals("results")){
 			result = new Result(Result.ALCHEMY_SENTIMENT);
+			result.addParam(url);
 			result.addParam("0");
 			done = true;
 		}

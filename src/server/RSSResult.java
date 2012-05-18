@@ -19,7 +19,7 @@ class RSSResult extends Result {
 			String link = params.get(i+1);
 			String desc = params.get(i+2);
 			
-			if(results_thread.getConclusionByUrl(link) != null){
+			if(results_thread.getConclusionByURL(link) != null){
 				continue;
 			} else if(!link.equals("unavailable")){
 				Result r = new Result(Result.RSS);

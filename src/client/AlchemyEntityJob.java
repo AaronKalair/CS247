@@ -9,13 +9,15 @@ import org.xml.sax.*;
 import java.util.*;
 import java.io.*;
 
-/* A job for getting Entities from Alchemy.
+/* 
+	A job for getting Entities from Alchemy.
    it must be sent two parameters from the server:
    0 = the url to tell Alchemy to parse.
    1 = the category that you want to get the highest ranked entity from.
    
-   It will return a result which has one param:
-   0 = The highest ranked entity of the given category or "none" if there were none.
+   It will return a result which has two params:
+   0 = the url.
+   1 = The highest ranked entity of the given category or "none" if there were none.
 */
 class AlchemyEntityJob extends AlchemyJob {
 		
@@ -46,7 +48,7 @@ class AlchemyEntityJob extends AlchemyJob {
 		String category = "";
 		try {
 			category = params.get(1);
-			handler = new AlchemyEntityHandler(category);
+			handler = new AlchemyEntityHandler(params.get(0), category);
 			// start parsing the XML returned.
 			parser.parse(url, handler);
 			// get the result after parsing.
@@ -64,7 +66,7 @@ class AlchemyEntityJob extends AlchemyJob {
 		AlchemyEntityJob j = new AlchemyEntityJob(new Job(Job.TEST, "http://www.bbc.co.uk/news/business-18098657"));
 		j.addParam("Country");
 		Result r = j.execute();
-		System.out.println(r.params.get(0));
+		System.out.println(r.params.get(1));
 	}
 }
 
@@ -72,12 +74,14 @@ class AlchemyEntityJob extends AlchemyJob {
 class AlchemyEntityHandler extends DefaultHandler {
 
 	Result result;
+	String url;
 	String category;
 	String current_element;
 	boolean store_text = false;
 	int done = 0;
 	
-	AlchemyEntityHandler(String category){
+	AlchemyEntityHandler(String url, String category){
+		this.url = url;
 		this.category = category;
 	}
 	
@@ -100,13 +104,14 @@ class AlchemyEntityHandler extends DefaultHandler {
 		if(done == 0 && store_text && current_element.equals("text")){
 			String text = new String(ch, start, length);
 			result = new Result(Result.ALCHEMY_ENTITY);
+			result.addParam(url);
 			result.addParam(text);
 			done = 1;
 		}
 		// if there is a <name> element, then store this instead (this is the disambiguated version).
 		if(done == 1 && store_text && current_element.equals("name")){
 			String text = new String(ch, start, length);
-			result.params.add(0, text);
+			result.params.add(1, text);
 			done = 2;
 		}
 	}
@@ -121,6 +126,7 @@ class AlchemyEntityHandler extends DefaultHandler {
 		// if we're at the end of the file with no results, set the result param to none.
 		if(done == 0 && localName.equals("results")){
 			result = new Result(Result.ALCHEMY_ENTITY);
+			result.addParam(url);
 			result.addParam("none");
 			done = 2;
 		}
