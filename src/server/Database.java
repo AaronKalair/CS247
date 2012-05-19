@@ -8,11 +8,6 @@ public class Database {
 
     private Connection conn;
     
-    private final String create_whitelist =
-    "CREATE TABLE IF NOT EXISTS`ip_whitelist` ("
-	+ "`ip_id` INTEGER PRIMARY KEY,"
-    + "`ip_address` varchar(16) NOT NULL);";
-    
     private final String create_alerts = 
 	"CREATE TABLE IF NOT EXISTS `android_alerts` ("
     + "`alert_id` INTEGER PRIMARY KEY," 
@@ -49,7 +44,6 @@ public class Database {
 			conn = DriverManager.getConnection("jdbc:sqlite:" + path);
 			conn.setAutoCommit(true);
 			Statement stmnt = conn.createStatement();
-			stmnt.executeUpdate(create_whitelist);
 			stmnt.executeUpdate(create_alerts);
 			stmnt.executeUpdate(create_android_devices);
 			stmnt.close();
@@ -68,77 +62,6 @@ public class Database {
         catch (Exception e) {
             e.printStackTrace();
         }
-    }
-    
-    /* Inserts a IP into the ip_whitelist table
-     * @param ip String representation of the IP to insert e.g. 192.156.454.5
-     */
-    public void insertIP(String ip) {
-            
-        PreparedStatement addIP = null;
-        
-        String insertIP = "INSERT INTO ip_whitelist values(NULL, ?)";
-        
-        try {
-            addIP = conn.prepareStatement(insertIP);
-            addIP.setString(1, ip);
-            addIP.executeUpdate();
-        }
-        
-        catch (Exception e) {
-           e.printStackTrace();
-        }
-    
-    }
-    
-    /* Inserts a IP into the ip_whitelist table
-     * @param ip String representation of the IP to check for e.g. 192.156.454.5
-     * @return true if the IP is in the table, false otherwise
-     */
-    public boolean validIP(String ip) {
-    
-        PreparedStatement checkIP = null;
-        ResultSet results = null;
-        boolean res = false;
-        
-        String IpToCheck = "SELECT ip_address FROM ip_whitelist WHERE ip_address = ?";
-        
-        try {
-        
-            checkIP = conn.prepareStatement(IpToCheck);
-            checkIP.setString(1, ip);
-            results = checkIP.executeQuery();
-            
-            // JavaDB has no way to find out the number of rows returned without itterating through them (yes really)
-            if(results.next()) res = true;
-            
-            results.close();
-        }
-        catch (Exception e)
-        {}
-        finally
-        {return res;} 
-    }
-    
-    /* Removes a IP from the ip_whitelist table
-     * @param ip String representation of the IP to remove e.g. 192.156.454.5
-     */
-    public void removeIP(String ip) {
-    
-        PreparedStatement deleteStatement = null;        
-        String IpToDelete = "DELETE FROM ip_whitelist WHERE ip_address = ?";
-        
-        try {
-        
-            deleteStatement = conn.prepareStatement(IpToDelete);
-            deleteStatement.setString(1, ip);
-            deleteStatement.executeUpdate();
-        }
-        
-        catch (Exception e) {
-           e.printStackTrace();
-        }
-        
     }
     
     /* Inserts an alert into the android_alerts table
