@@ -2,6 +2,7 @@ package CS247;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.net.URLDecoder;
 
 public class ResultsThread extends Thread {
 	
@@ -56,8 +57,15 @@ public class ResultsThread extends Thread {
 	
 	public void addConclusionToDatabase(Conclusion c){
 		//TODO
+		String fixedurl;
+		try {
+			fixedurl = URLDecoder.decode(c.url, "UTF-8");
+		} catch(Exception e){
+			fixedurl = "?";
+		}
 		System.out.println("===================");
-		System.out.println("REACHED CONCLUSION:\n\t" + c.suggestion);
+		System.out.printf("REACHED CONCLUSION:\n %s\n\tCategory: %s\n\tEntity: %s\n\tSentiment: %s\n\tURL: %s\n",
+					c.suggestion, c.category, c.entity, c.sentiment, fixedurl);
 		System.out.println("===================");
 	}
 	

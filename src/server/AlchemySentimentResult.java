@@ -21,10 +21,13 @@ class AlchemySentimentResult extends Result {
 		
 		if(c != null && !sentiment.equals("0")){
 			c.sentiment = new Float(Float.parseFloat(sentiment));
+			System.out.println("Alchemy sentiment: " + c.sentiment);
 			
 			if(c.category != null && c.category.equals("Country") && c.entity != null && c.sentiment < 0){
 				Job j = new Job(Job.WOLFRAM_ALPHA, url);
-				j.addParam(c.entity + "+export+commodities");
+				System.out.println("adding wolfram alpha job");
+				j.addParam(new String(c.entity + "+export+commodities").replace(" ", "+"));
+				scheduler.addJob(j);
 			}
 			
 			if(c.category != null && c.category.equals("Stocks") && c.entity != null){
