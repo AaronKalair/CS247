@@ -26,7 +26,7 @@ public class Database {
     private final String create_android_devices =
     "CREATE TABLE `android_devices` ("
     + "`registration_id` VARCHAR( 500 ) NOT NULL COMMENT 'The ID provided by android cloud to device messaging (C2DM)',"
-	+ ");"
+	+ ");";
     
     // Connect to the database.
     Database() {
@@ -51,7 +51,7 @@ public class Database {
 			Statement stmnt = conn.createStatement();
 			stmnt.executeUpdate(create_whitelist);
 			stmnt.executeUpdate(create_alerts);
-			stmnt.executeUpdate(create_android_device);
+			stmnt.executeUpdate(create_android_devices);
 			stmnt.close();
         } catch (Exception e) {
             e.printStackTrace();
