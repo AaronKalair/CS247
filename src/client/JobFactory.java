@@ -9,7 +9,8 @@ public class JobFactory {
 	}
 	
 	Job makeJob(DataInputStream in) throws IOException {
-		Job ret = null, j = Job.deserialize(in);
+		Job ret = null;
+		Job j = Job.deserialize(in);
 		
 		switch(j.type){
 			case Job.RSS:

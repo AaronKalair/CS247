@@ -1,8 +1,5 @@
 package CS247;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.*;
 
@@ -15,12 +12,10 @@ import java.net.URLEncoder;
 	It requies one param from the server: the url.
 	And it returns a result with all the titles, links and descriptions in that order.
 */
-class RSSJob extends Job {
+class RSSJob extends XMLJob {
 
 	String url;
-	SAXParser parser;
 	RSSHandler handler;
-	Result ret = null;
 	
 	RSSJob(Job j){
 		super(j);
@@ -28,11 +23,6 @@ class RSSJob extends Job {
 		try {
 			// the url of the rss feed should be the first parameter.
 			url = params.get(0);
-			// setup XML parsing stuff.
-			SAXParserFactory factory = SAXParserFactory.newInstance();
-			factory.setNamespaceAware(true);
-			factory.setValidating(true);
-			parser = factory.newSAXParser();
 		} catch(Throwable e){
 			e.printStackTrace();
 			ret = new Result(Result.INVALID);
