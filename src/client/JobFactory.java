@@ -28,6 +28,9 @@ public class JobFactory {
 			case Job.ALCHEMY_SENTIMENT:
 				ret = new AlchemySentimentJob(j);
 			break;
+			case Job.TWITTER:
+				ret = new TwitterJob(j);
+			break;
 			case Job.TEST: 
 			default:
 				ret = new TestJob(j);

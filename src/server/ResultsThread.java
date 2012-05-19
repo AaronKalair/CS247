@@ -84,6 +84,8 @@ public class ResultsThread extends Thread {
 				return new AlchemyEntityResult(in, this);
 			case Result.ALCHEMY_SENTIMENT:
 				return new AlchemySentimentResult(in, this);
+			case Result.TWITTER:
+				return new TwitterResult(in, this);
 			case Result.INVALID:
 			default:
 				return null;
