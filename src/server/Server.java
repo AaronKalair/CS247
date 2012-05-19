@@ -11,8 +11,8 @@ public class Server {
 	AndroidServer androidServer;
 	Scheduler scheduler;
 	ResultsThread results_thread;
+	Database database;
 	Logger logger;
-	private final Database database;
 
 	Server(){
 		// create the listening socket, FIXME: choose port number.
@@ -27,6 +27,7 @@ public class Server {
 		results_thread = new ResultsThread(this);
 		results_thread.start();
 		database = new Database();
+
 		androidServer = new AndroidServer(45587, database);
 		androidServer.start();
 	}
@@ -81,7 +82,5 @@ public class Server {
 		
 		server.dispose();
 	}
-
-
 
 }

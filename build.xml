@@ -1,7 +1,7 @@
 <project name="CS247" default="all" basedir=".">
 
-	
 	<target name="all" depends="client,server"/>
+	
 	<target name="client" >
 		<mkdir dir="bin/client"/>
 		<javac srcdir="src/shared" destdir="bin/client" includeantruntime="false"/>
@@ -20,9 +20,10 @@
 		<jar jarfile="bin/server.jar" basedir="bin/server">
 			<manifest>
 				<attribute name="Main-Class" value="CS247.Server"/>
+				<attribute name="Class-Path" value="sqlitejdbc-v056.jar"/>
 			</manifest>
 		</jar>
-	</target>  
+	</target>
 	
 	<target name="app">
 		<ant antfile="src/app/build.xml" target="debug" inheritall="false"/>
