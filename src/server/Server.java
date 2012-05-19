@@ -27,7 +27,6 @@ public class Server {
 		results_thread = new ResultsThread(this);
 		results_thread.start();
 		database = new Database();
-
 		androidServer = new AndroidServer(45587, database);
 		androidServer.start();
 	}

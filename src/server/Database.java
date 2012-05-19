@@ -24,8 +24,8 @@ public class Database {
     + "`time_stamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);";
     
     private final String create_android_devices =
-    "CREATE TABLE `android_devices` ("
-    + "`registration_id` VARCHAR( 500 ) NOT NULL COMMENT 'The ID provided by android cloud to device messaging (C2DM)',"
+    "CREATE TABLE IF NOT EXISTS `android_devices` ("
+    + "`registration_id` VARCHAR( 500 ) NOT NULL"
 	+ ");";
     
     // Connect to the database.
