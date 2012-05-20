@@ -123,6 +123,20 @@ public class Database {
 
     }
     
+    public boolean isAlertPresent(String link){
+    	PreparedStatement ps = conn.prepareStatement("SELECT alert_id FROM android_alerts WHERE link = ?");
+    	ps.setString(1, link);
+    	ResultSet r = ps.executeUpdate();
+    	boolean res = false;
+		try {
+			res = r.next();
+			r.close();
+		} catch(Exception e){
+			res = false;
+		}
+		return res;
+    }
+    
     /* Gets an alert from the android_alerts table by its ID as an array
      * @param id The id of the alert you want to get
      * @return array representing part of the row returned 0 = Title, 1 = Link, 2 = Description, 3 = Suggestions
@@ -140,7 +154,7 @@ public class Database {
             getAlert.setInt(1, alert_id);
             rs = getAlert.executeQuery();
             // Move the pointer to the start of the results
-            //rs.next();
+            rs.next();
             Results[0] = rs.getString("title");
             Results[1] = rs.getString("link");
             Results[2] = rs.getString("description");

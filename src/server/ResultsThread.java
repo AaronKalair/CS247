@@ -2,21 +2,36 @@ package CS247;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.sql.ResultSet;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 public class ResultsThread extends Thread {
 	
 	final Server server;
-	//private final Database database;
+	private final Database database;
 	private ArrayBlockingQueue<Result> results_in;
 	HashMap<String, Conclusion> conclusions;
 
 	ResultsThread(Server server){
 		super("ResultsThread");
 		this.server = server;
-		//this.database = server.database;
+		this.database = server.database;
 		results_in = new ArrayBlockingQueue<Result>(20);
 		conclusions = new HashMap<String, Conclusion>();
+		// add all conclusions from the databse so we don't duplicate them.
+		try {
+			ResultSet rs = database.getAllAlertsSinceXAsResultSetObject("2000-01-01 00:00:00");
+			while(rs.next()){
+				String s = URLEncoder.encode(rs.getString("link"), "UTF-8");
+				Conclusion c = new Conclusion(s, null);
+				c.suggestion = rs.getString("suggestions");
+				storeConclusion(c);
+			}
+			rs.close();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	public void addResult(Result r){
@@ -56,7 +71,6 @@ public class ResultsThread extends Thread {
 	}
 	
 	public void addConclusionToDatabase(Conclusion c){
-		//TODO
 		String fixedurl;
 		try {
 			fixedurl = URLDecoder.decode(c.url, "UTF-8");
@@ -67,6 +81,12 @@ public class ResultsThread extends Thread {
 		System.out.printf("REACHED CONCLUSION:\n %s\n\tCategory: %s\n\tEntity: %s\n\tSentiment: %s\n\tURL: %s\n",
 					c.suggestion, c.category, c.entity, c.sentiment, fixedurl);
 		System.out.println("===================");
+		
+		if(!database.isAlertPresent(fixedurl) && c.result != null){
+			String title = c.result.type == Result.TWITTER ? "Tweet" : c.result.params.get(0);
+			String desc = c.result.type == Result.RSS ? c.result.params.get(2) : c.result.params.get(0);
+			database.insertAlert(title, fixedurl, desc, c.suggestion, 1);
+		}
 	}
 	
 	private Result makeResult(Result in){

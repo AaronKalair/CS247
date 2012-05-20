@@ -25,9 +25,9 @@ public class Server {
 		logger = Logger.getLogger("global");
 		scheduler = new Scheduler(this);
 		scheduler.start();
+		database = new Database();
 		results_thread = new ResultsThread(this);
 		results_thread.start();
-		database = new Database();
 		androidServer = new AndroidServer(45587, database);
 		androidServer.start();
 		ip_whitelist = new IPWhitelist();
