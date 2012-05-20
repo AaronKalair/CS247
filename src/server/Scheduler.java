@@ -8,23 +8,21 @@ public class Scheduler extends Thread {
 	// job_queue holds the jobs that are ready to be sent to clients.
 	private PriorityBlockingQueue<ScheduledJob> job_queue;
 	private ArrayList<PeriodicJob> periodic_jobs;
+	private DataSourceManager data_source_manager;
 	private long prev_time;
 	
 	Scheduler(Server server){
 		super("Scheduler");
 		job_queue = new PriorityBlockingQueue<ScheduledJob>();
 		periodic_jobs = new ArrayList<PeriodicJob>();
+		data_source_manager = new DataSourceManager();
 		prev_time = System.currentTimeMillis();
-		// this.database = server.database; FIXME: implement database.
-		// load periodic jobs from database.
-		// periodic_jobs.addAll(database.getPeriodicJobs());
-		// Add a job for testing purposes.
-		PeriodicJob p = new PeriodicJob(100000, Job.RSS, "http://feeds.bbci.co.uk/news/rss.xml");
-		periodic_jobs.add(p);
 	}
 	
 	public void run(){
 		while(true){
+			// update jobs.
+			data_source_manager.getSources(periodic_jobs);
 			// get the time delta from when we did this last.
 			long delta = System.currentTimeMillis() - prev_time;
 			prev_time = System.currentTimeMillis();

@@ -12,6 +12,7 @@ public class Server {
 	Scheduler scheduler;
 	ResultsThread results_thread;
 	Database database;
+	IPWhitelist ip_whitelist;
 	Logger logger;
 
 	Server(){
@@ -29,6 +30,7 @@ public class Server {
 		database = new Database();
 		androidServer = new AndroidServer(45587, database);
 		androidServer.start();
+		ip_whitelist = new IPWhitelist();
 	}
 	
 	boolean run() {
@@ -46,7 +48,7 @@ public class Server {
 		// FIXME: maybe make this work with hostnames instead of ip addresses?
 		String ip = connection.getInetAddress().getHostAddress();
 		// create a new worker if this ip is whitelisted, print a warning otherwise.
-		if(database.validIP(ip)){
+		if(ip_whitelist.checkIP(ip)){
 			logger.log(Level.INFO, "new client from " + ip);
 			ClientWorkerThread cwt = new ClientWorkerThread(connection, this);
 			cwt.start();
