@@ -124,11 +124,11 @@ public class Database {
     }
     
     public boolean isAlertPresent(String link){
-    	PreparedStatement ps = conn.prepareStatement("SELECT alert_id FROM android_alerts WHERE link = ?");
-    	ps.setString(1, link);
-    	ResultSet r = ps.executeUpdate();
-    	boolean res = false;
+		boolean res = false;
 		try {
+	   		PreparedStatement ps = conn.prepareStatement("SELECT alert_id FROM android_alerts WHERE link = ?");
+    		ps.setString(1, link);
+    		ResultSet r = ps.executeQuery();
 			res = r.next();
 			r.close();
 		} catch(Exception e){
