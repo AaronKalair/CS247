@@ -1,15 +1,18 @@
 package cs247.app;
 
-import java.io.OutputStream;
-import java.net.Socket;
-
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 public class MyC2dmReceiver extends BroadcastReceiver {
-
+	
+	// 10.0.2.2 is an alias to the host running the emulator.
+	private CS247ServerConnection server_connection = new CS247ServerConnection("10.0.2.2");
+	
+    
 	@Override
 	// Listen for any messages coming in from the C2DM Server
 	public void onReceive(Context context, Intent intent) {
@@ -17,7 +20,7 @@ public class MyC2dmReceiver extends BroadcastReceiver {
 	        handleRegistration(context, intent);
 	    }
 	    else if (intent.getAction().equals("com.google.android.c2dm.intent.RECEIVE")) {
-	       // handleMessage(context, intent);
+	       handleMessage(context, intent);
 	    }
 	}
 	
@@ -49,76 +52,40 @@ public class MyC2dmReceiver extends BroadcastReceiver {
 	    // If we unregistered
 	    else if (intent.getStringExtra("unregistered") != null) {
 	        Log.d("c2dm", "unregistered");
-	        
-	        // Tell the server we unregistered this device
-	        Socket connection = null;
-        	// Open a socket to the server
-        	try {
-        		connection = new Socket("owens server", 9000);
-        	}
-        	catch (Exception e) {
-        		Log.e("Socket", "Unable to open socket");
-        	}
-        	
-        	// Tell the server what our registration id is
-        	try {
-    			OutputStream send = connection.getOutputStream();
-    			String stringToSend = "1";
-    			send.write( stringToSend.getBytes() );
-    		} 
-        	catch (Exception e) {
-    			Log.e("Socket", "Unable to open output stream");
-    		} 
 	    } 
 	    
 	    // If we registered the device send the ID up to the server
 	    else if (registration != null) {
-	    	Log.d("c2dm", "registration took place  " + registration);
-	    	
-	    	Socket connection = null;
-        	// Open a socket to the server
-        	try {
-        		connection = new Socket("owens server", 9000);
-        	}
-        	catch (Exception e) {
-        		Log.e("Socket", "Unable to open socket");
-        	}
-        	
-        	// Tell the server what our registration id is
-        	try {
-    			OutputStream send = connection.getOutputStream();
-    			String stringToSend = "0 " + registration;
-    			send.write( stringToSend.getBytes() );
-    		} 
-        	catch (Exception e) {
-    			Log.e("Socket", "Unable to open output stream");
-    		} 
+	    	Log.d("c2dm", "registration took place id:  " + registration);
+	    	// Send our ID up to the server
+	        server_connection.registerC2DM(registration);
 	    }
 	    
 	}
 	
-	// Deal with a message when it is recieved
+	// Deal with a message when it is received
 	protected void handleMessage(Context context, Intent intent) {
-	    String message = intent.getExtras().getString("alertid");
-	        
-    	// Connect to the server and pull down the alert with this id
-	    Socket connection = null;
-    	// Open a socket to the server
-    	try {
-    		connection = new Socket("owens server", 9000);
+		
+		// DB things
+	    DBAdmin dbadmin = new DBAdmin(context);
+		SQLiteDatabase db = dbadmin.getWritableDatabase();
+		
+		// Get the id of the alert from the message
+	    String message = intent.getExtras().getString("id");
+	    // Connect to the server and pull down the alert
+	    String[] alert = server_connection.getAlertFromServer(Integer.parseInt(message));
+	    
+	    try {
+        	ContentValues values = new ContentValues();
+            values.put("title", alert[0] );
+            values.put("link", alert[1] );
+            values.put("description", alert[2] );
+            values.put("suggestions", alert[3] );
+            values.put("timestamp", alert[4] );
+            db.insertOrThrow("alerts", null, values);
+    	} catch (Exception e) {
+    		Log.e("DB", "Insert failed from push alert");
     	}
-    	catch (Exception e) {
-    		Log.e("Socket", "Unable to open socket");
-    	}
-    	
-    	// Tell the server what our registration id is
-    	try {
-			OutputStream send = connection.getOutputStream();
-			String stringToSend = "2 " + message;
-			send.write( stringToSend.getBytes() );
-		} 
-    	catch (Exception e) {
-			Log.e("Socket", "Unable to open output stream");
-		}
+
 	}
 }
