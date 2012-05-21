@@ -1,8 +1,7 @@
 package CS247;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.sql.ResultSet;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -11,8 +10,8 @@ import java.util.logging.Logger;
 public class AndroidClient extends Thread {
 	private final Socket socket;
 	private final AndroidServer owner;
-	private final OutputStream out;
-	private final InputStream in;
+	private final DataOutputStream out;
+	private final DataInputStream in;
 	private final Logger logger;
 	private final String addr;
 	private final Database database;
@@ -25,8 +24,8 @@ public class AndroidClient extends Thread {
 		this.socket = socket;
 		try
 		{
-			out = socket.getOutputStream();
-			in = socket.getInputStream();
+			out = new DataOutputStream(socket.getOutputStream());
+			in = new DataInputStream(socket.getInputStream());
 		}
 		catch (IOException e)
 		{throw new RuntimeException("Android client ("+addr+") could not get socket stream.");}
@@ -36,45 +35,57 @@ public class AndroidClient extends Thread {
 	}
 	
 	public void run() {
-		try
-		{
-			switch(in.read())
+		while(socket.isConnected()){
+			try
 			{
-			case 0://register
-				if(database.insertRegistrationID(readRegistrationID()))
-				{out.write(1);}
-				else
-				{out.write(0);}
-				break;
-				
-			case 1://deregister
-				if(database.removeRegistrationID(readRegistrationID()))
-				{out.write(1);}
-				else
-				{out.write(0);}
-				break;
-				
-			case 2://push
-				int alert_id = in.read();
-				String[] results = database.getAlertByIDAsArray(alert_id);
-				if(results == null)
-				{out.write(0);}
-				else
+				switch(in.read())
 				{
-					out.write(1);
-					for(int i=0;i<results.length;i++)
-					{
-						out.write(results[i].getBytes(), 0, results[i].length());
-						out.write(0);
+				case 0://register
+					out.write(database.removeRegistrationID(in.readUTF()) ? 1 : 0);
+					break;
+				case 1://deregister
+					out.write(database.removeRegistrationID(in.readUTF()) ? 1 : 0);
+					break;
+				case 2://push
+					int alert_id = in.readInt();
+					String[] results = database.getAlertByIDAsArray(alert_id);
+					if(results == null){
+						out.writeInt(0);
+					} else {
+						out.writeInt(results.length);
+						for(int i = 0; i < results.length; i++) {
+							out.writeUTF(results[i]);
+						}
 					}
+					break;
+				case 3: // pull
+					try {
+						String timestamp = in.readUTF();
+						ResultSet rs = database.getAllAlertsSinceXAsResultSetObject(timestamp);
+						int i = 0;
+						while(rs.next()){
+							++i;
+						}
+						rs.close();
+						out.writeInt(i);
+						rs = database.getAllAlertsSinceXAsResultSetObject(timestamp);
+						while(rs.next()){
+							out.writeUTF(rs.getString("title"));
+							out.writeUTF(rs.getString("link"));
+							out.writeUTF(rs.getString("description"));
+							out.writeUTF(rs.getString("suggestions"));
+							out.writeUTF(rs.getString("reasoning"));
+						}
+						rs.close();
+					} catch(Exception e){
+						throw new IOException(e);
+					}
+					break;
 				}
-				break;
+			} catch (IOException e){
+				logger.log(Level.INFO, "Android client ("+addr+") dropped due to IOException.");
 			}
 		}
-		catch (IOException e)
-		{logger.log(Level.INFO, "Android client ("+addr+") dropped due to IOException.");}
-		finally
-		{owner.dispose(this);}
 	}
 	
 	private String readRegistrationID() throws IOException
