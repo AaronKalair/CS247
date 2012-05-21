@@ -1,6 +1,8 @@
 package CS247;
 
 import java.sql.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.net.URLDecoder;
 import java.io.File;
 
@@ -311,5 +313,25 @@ public class Database {
         {return false;}
         
         return true;
+    }
+    
+    public List<String> getDevices()
+    {
+    	PreparedStatement devices = null;
+        ResultSet rs = null;
+        List results = null;
+        
+    	try
+        {
+    		results = new LinkedList<String>();
+            devices = conn.prepareStatement("SELECT * FROM android_devices");
+            rs = devices.executeQuery();
+            while(rs.next())
+            {results.add(rs.getString("registration_id"));}
+        }
+        catch (Exception e)
+        {}
+    	
+        return results;
     }
 }
