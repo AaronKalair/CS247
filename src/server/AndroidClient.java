@@ -74,6 +74,7 @@ public class AndroidClient extends Thread {
 							out.writeUTF(rs.getString("link"));
 							out.writeUTF(rs.getString("description"));
 							out.writeUTF(rs.getString("suggestions"));
+							out.writeUTF(rs.getString("reasoning"));
 							out.writeUTF(rs.getString("time_stamp"));
 						}
 						rs.close();

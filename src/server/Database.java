@@ -183,7 +183,7 @@ public class Database {
         PreparedStatement getAlerts = null;
         ResultSet rs = null;
         
-        String alertsToGet = "SELECT * FROM android_alerts WHERE time_stamp >= ? ORDER BY time_stamp";
+        String alertsToGet = "SELECT * FROM android_alerts WHERE time_stamp > ? ORDER BY time_stamp";
         
         try {
             getAlerts = conn.prepareStatement(alertsToGet);

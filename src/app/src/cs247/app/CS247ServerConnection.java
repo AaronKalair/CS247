@@ -35,9 +35,9 @@ public class CS247ServerConnection {
 			
 				int num_results = in.readInt();
 				Log.d("debug", "" + num_results);
-				results = new String[num_results * 5];
+				results = new String[num_results * 6];
 			
-				for(int i = 0; i < num_results * 5; ++i){
+				for(int i = 0; i < num_results * 6; ++i){
 					results[i] = in.readUTF();
 				}
 			} catch(Exception e){
