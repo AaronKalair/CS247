@@ -20,7 +20,8 @@ public class Details extends Activity{
 		db = dbadmin.getWritableDatabase();
 		TextView tv = new TextView(this);
 		tv.setBackgroundColor(0xFFEEEEEE);
-		tv.setTextColor(0xFFCCCCCC);
+		tv.setTextColor(0xFF111111);
+		tv.setPadding(5, 5, 5, 5);
 		// Get the ID of the alert we want more info on or -1 if it failed to pass a value in
 		long item = getIntent().getLongExtra("alertid", -1);
 				
