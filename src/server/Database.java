@@ -10,11 +10,6 @@ public class Database {
 
     private Connection conn;
     
-    private final String create_whitelist =
-    "CREATE TABLE IF NOT EXISTS`ip_whitelist` ("
-	+ "`ip_id` INTEGER PRIMARY KEY,"
-    + "`ip_address` varchar(16) NOT NULL);";
-    
     private final String create_alerts = 
 	"CREATE TABLE IF NOT EXISTS `android_alerts` ("
     + "`alert_id` INTEGER PRIMARY KEY," 
@@ -22,7 +17,8 @@ public class Database {
     + "`link` VARCHAR( 500 ) NOT NULL,"
     + "`description` TEXT( 10000 ) NOT NULL,"
     + "`suggestions` TEXT( 10000 ) NOT NULL,"
-    + "`importance` TINYINT NOT NULL,"
+    + "`reasoning` TEXT( 10000 ) NOT NULL,"
+    + "`importance` TINYINT NOT NULL DEFAULT 1,"
     + "`time_stamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);";
     
     private final String create_android_devices =
@@ -51,7 +47,6 @@ public class Database {
 			conn = DriverManager.getConnection("jdbc:sqlite:" + path);
 			conn.setAutoCommit(true);
 			Statement stmnt = conn.createStatement();
-			stmnt.executeUpdate(create_whitelist);
 			stmnt.executeUpdate(create_alerts);
 			stmnt.executeUpdate(create_android_devices);
 			stmnt.close();
@@ -72,102 +67,6 @@ public class Database {
         }
     }
     
-    /* Inserts a IP into the ip_whitelist table
-     * @param ip String representation of the IP to insert e.g. 192.156.454.5
-     */
-    public void insertIP(String ip) {
-            
-        PreparedStatement addIP = null;
-        
-        String insertIP = "INSERT INTO ip_whitelist values(NULL, ?)";
-        
-        try {
-            addIP = conn.prepareStatement(insertIP);
-            addIP.setString(1, ip);
-            addIP.executeUpdate();
-        }
-        
-        catch (Exception e) {
-           e.printStackTrace();
-        }
-    
-    }
-    
-    /* Inserts a IP into the ip_whitelist table
-     * @param ip String representation of the IP to check for e.g. 192.156.454.5
-     * @return true if the IP is in the table, false otherwise
-     */
-    public boolean validIP(String ip) {
-    
-        PreparedStatement checkIP = null;
-        ResultSet results = null;
-        boolean res = false;
-        
-        String IpToCheck = "SELECT ip_address FROM ip_whitelist WHERE ip_address = ?";
-        
-        try {
-        
-            checkIP = conn.prepareStatement(IpToCheck);
-            checkIP.setString(1, ip);
-            results = checkIP.executeQuery();
-            
-            // JavaDB has no way to find out the number of rows returned without itterating through them (yes really)
-            if(results.next()) res = true;
-            
-            results.close();
-        }
-        catch (Exception e)
-        {}
-        finally
-        {return res;} 
-    }
-    
-    /* Removes a IP from the ip_whitelist table
-     * @param ip String representation of the IP to remove e.g. 192.156.454.5
-     */
-    public void removeIP(String ip) {
-    
-        PreparedStatement deleteStatement = null;        
-        String IpToDelete = "DELETE FROM ip_whitelist WHERE ip_address = ?";
-        
-        try {
-        
-            deleteStatement = conn.prepareStatement(IpToDelete);
-            deleteStatement.setString(1, ip);
-            deleteStatement.executeUpdate();
-        }
-        
-        catch (Exception e) {
-           e.printStackTrace();
-        }
-        
-    }
-    
-    /* Inserts an alert into the android_alerts table
-     * @param title The title of the alert
-     * @param link The link to the source of the alert
-     * @param importance A integer representing how important this alert is, pass in -1 if you do not want to use this parameter
-     */
-    public void insertAlert(String title, String link, int importance) {
-        
-        PreparedStatement addAlert = null;
-        
-        String insertAlert = "INSERT INTO android_alerts (alert_id, title, link, importance) values(NULL, ?, ?, ?)";
-        
-        try {
-            addAlert = conn.prepareStatement(insertAlert);
-            addAlert.setString(1, title);
-            addAlert.setString(2, link);
-            addAlert.setInt(3, importance);
-            addAlert.executeUpdate();
-        }
-        
-        catch (Exception e) {
-           e.printStackTrace();
-        }
-    
-    }
-    
     /* Inserts an alert into the android_alerts table
      * @param title The title of the alert
      * @param link The link to the source of the alert
@@ -176,11 +75,11 @@ public class Database {
      * @param importance A integer representing how important this alert is, pass in -1 if you do not want to use this parameter
      * @return the id of the alert that was inserted.
      */
-    public void insertAlert(String title, String link, String description, String suggestions, int importance) {
+    public void insertAlert(String title, String link, String description, String suggestions, String reasoning) {
         
         PreparedStatement addAlert = null;
         
-        String insertAlert = "INSERT INTO android_alerts (alert_id, title, link, description, suggestions, importance) values(NULL, ?, ?, ?, ? , ?)";
+        String insertAlert = "INSERT INTO android_alerts (alert_id, title, link, description, suggestions, reasoning) values(NULL, ?, ?, ?, ?, ?)";
         
         try {
             // can't return the value of the alert_id column with sqlite :/
@@ -189,7 +88,7 @@ public class Database {
             addAlert.setString(2, link);
             addAlert.setString(3, description);
             addAlert.setString(4, suggestions);
-            addAlert.setInt(5, importance);
+            addAlert.setString(5, reasoning);
             addAlert.executeUpdate();
             //we can select last insert id
         }
@@ -202,15 +101,29 @@ public class Database {
 
     }
     
+    public boolean isAlertPresent(String link){
+		boolean res = false;
+		try {
+	   		PreparedStatement ps = conn.prepareStatement("SELECT alert_id FROM android_alerts WHERE link = ?");
+    		ps.setString(1, link);
+    		ResultSet r = ps.executeQuery();
+			res = r.next();
+			r.close();
+		} catch(Exception e){
+			res = false;
+		}
+		return res;
+    }
+    
     /* Gets an alert from the android_alerts table by its ID as an array
      * @param id The id of the alert you want to get
-     * @return array representing part of the row returned 0 = Title, 1 = Link, 2 = Description, 3 = Suggestions
+     * @return array representing part of the row returned 0 = Title, 1 = Link, 2 = Description, 3 = Suggestions, 4 = reasoning
      */
    public String[] getAlertByIDAsArray(int alert_id) {
         
         PreparedStatement getAlert = null;
         ResultSet rs = null;
-        String[] Results = new String[4];
+        String[] Results = new String[5];
         
         String alertToGet = "SELECT * FROM android_alerts WHERE alert_id = ? ";
         
@@ -219,11 +132,12 @@ public class Database {
             getAlert.setInt(1, alert_id);
             rs = getAlert.executeQuery();
             // Move the pointer to the start of the results
-            //rs.next();
+            rs.next();
             Results[0] = rs.getString("title");
             Results[1] = rs.getString("link");
             Results[2] = rs.getString("description");
             Results[3] = rs.getString("suggestions");
+            Results[4] = rs.getString("reasoning");
             rs.close();
         }
         

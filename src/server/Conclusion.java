@@ -14,8 +14,11 @@ class Conclusion {
 	Float sentiment;
 	// result that let to this conclusion.
 	Result result;
+	// reasoning behind the conclusion.
+	String reasoning;
 	
 	Conclusion(String url, Result result){
+		reasoning = "";
 		sentiment = null;
 		suggestion = null;
 		entity = null;

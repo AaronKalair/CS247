@@ -23,6 +23,7 @@ class RelevancyResult extends Result {
 			c.category = category;
 			// if this url is relevant to countries, get the sentiment.
 			if(category.equals("Country")){
+				c.reasoning += "Relevant to Disaster (keyword match).\n";
 				System.out.println("adding alchemy entity job.");
 				Job j = new Job(Job.ALCHEMY_ENTITY, url);
 				j.addParam("Country");
@@ -31,6 +32,7 @@ class RelevancyResult extends Result {
 			}
 			// for stocks, get the most relevant company.
 			if(category.equals("Stocks")){
+				c.reasoning += "Relevant to Stock market (keyword match).\n";
 				System.out.println("adding alchemy entity job. " + url);
 				Job j = new Job(Job.ALCHEMY_ENTITY, url);
 				j.addParam("Company");
