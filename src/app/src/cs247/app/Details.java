@@ -1,21 +1,11 @@
 package cs247.app;
 
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-
-import org.w3c.dom.Text;
-
 import android.app.Activity;
-import android.app.ListActivity;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 
@@ -29,6 +19,9 @@ public class Details extends Activity{
 		
 		db = dbadmin.getWritableDatabase();
 		TextView tv = new TextView(this);
+		tv.setBackgroundColor(0xFFEEEEEE);
+		tv.setTextColor(0xFF111111);
+		tv.setPadding(5, 5, 5, 5);
 		// Get the ID of the alert we want more info on or -1 if it failed to pass a value in
 		long item = getIntent().getLongExtra("alertid", -1);
 				

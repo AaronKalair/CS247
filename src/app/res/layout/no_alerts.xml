@@ -26,7 +26,7 @@
 			android:layout_marginLeft="40dp"
 		    android:layout_marginTop="20dp"
 		    android:textColor="#111111"
-			android:text="Online"
+			android:text="Offline"
 		/>
 		<ImageView
 		    android:id="@+id/status"
@@ -35,12 +35,21 @@
 		    android:layout_alignParentRight="true"
 		    android:layout_marginTop="10dp"
 		    android:padding="5dp"
-		    android:src="@raw/on"
+		    android:src="@raw/off"
 		/>
 	</RelativeLayout>
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textColor="#111111"
+		android:gravity="center_horizontal"
+		android:textStyle="italic"
+        android:text="No Alerts" 
+    />
 	<ListView
 	    android:id="@android:id/list"
-	    android:textColor="#111111"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	/>
