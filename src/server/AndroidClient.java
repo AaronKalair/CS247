@@ -74,13 +74,18 @@ public class AndroidClient extends Thread {
 							out.writeUTF(rs.getString("link"));
 							out.writeUTF(rs.getString("description"));
 							out.writeUTF(rs.getString("suggestions"));
-							out.writeUTF(rs.getString("reasoning"));
+							out.writeUTF(rs.getString("timestamp"));
 						}
 						rs.close();
 					} catch(Exception e){
 						throw new IOException(e);
 					}
 					break;
+				}
+				try {
+					Thread.sleep(50);
+				} catch(Exception e){
+					throw new IOException(e);
 				}
 			} catch (IOException e){
 				logger.log(Level.INFO, "Android client ("+addr+") dropped due to IOException.");

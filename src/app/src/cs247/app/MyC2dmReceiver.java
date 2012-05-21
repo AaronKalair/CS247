@@ -3,9 +3,7 @@ package cs247.app;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import android.accounts.Account;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;

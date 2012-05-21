@@ -3,6 +3,8 @@ package cs247.app;
 import java.net.*;
 import java.io.*;
 
+import android.util.Log;
+
 public class CS247ServerConnection {
 
 	String host;
@@ -25,18 +27,21 @@ public class CS247ServerConnection {
 	
 	String[] pollForAlerts(String timestamp){
 		String[] results = null;
+		Log.d("debug", timestamp);
 		if(connection != null && connection.isConnected()){
 			try {
 				out.writeByte((byte)3);
 				out.writeUTF(timestamp);
 			
 				int num_results = in.readInt();
+				Log.d("debug", "" + num_results);
 				results = new String[num_results * 5];
 			
 				for(int i = 0; i < num_results * 5; ++i){
 					results[i] = in.readUTF();
 				}
 			} catch(Exception e){
+				connection = null;
 				e.printStackTrace();
 			}
 		}
@@ -58,6 +63,7 @@ public class CS247ServerConnection {
 					results[i] = in.readUTF();
 				}
 			} catch(Exception e){
+				connection = null;
 				e.printStackTrace();
 			}
 		}
@@ -73,6 +79,7 @@ public class CS247ServerConnection {
 			
 				if(in.readByte() == 1) success = true;
 			} catch(Exception e){
+				connection = null;
 				e.printStackTrace();
 			}
 		}
@@ -88,6 +95,7 @@ public class CS247ServerConnection {
 			
 				if(in.readByte() == 1) success = true;
 			} catch(Exception e){
+				connection = null;
 				e.printStackTrace();
 			}
 		}
@@ -102,8 +110,12 @@ public class CS247ServerConnection {
 		try {
 			if(connection != null){
 				connection.connect(new InetSocketAddress(host, PORT));
+				out = new DataOutputStream(connection.getOutputStream());
+				in = new DataInputStream(connection.getInputStream());
 			} else {
 				connection = new Socket(host, PORT);
+				out = new DataOutputStream(connection.getOutputStream());
+				in = new DataInputStream(connection.getInputStream());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

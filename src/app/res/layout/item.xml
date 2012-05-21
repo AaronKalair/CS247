@@ -5,13 +5,15 @@
    android:layout_width="fill_parent"
    android:layout_height="fill_parent"
    android:orientation="horizontal"
-   android:padding="10sp">
+   android:padding="10sp"
+   android:background="#eee">
    
       <TextView
       android:id="@+id/suggestions"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:singleLine="true"
+      android:textColor="#111111"
       />
       
    <TextView
@@ -21,7 +23,8 @@
       android:ellipsize="end"
       android:singleLine="true"
       android:textStyle="italic"
-      android:layout_below="@id/suggestions" />
+      android:layout_below="@id/suggestions"
+      android:textColor="#111111" />
 
    
 </RelativeLayout>
