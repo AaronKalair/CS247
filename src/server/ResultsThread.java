@@ -78,14 +78,14 @@ public class ResultsThread extends Thread {
 			fixedurl = "?";
 		}
 		System.out.println("===================");
-		System.out.printf("REACHED CONCLUSION:\n %s\n\tCategory: %s\n\tEntity: %s\n\tSentiment: %s\n\tURL: %s\n",
-					c.suggestion, c.category, c.entity, c.sentiment, fixedurl);
+		System.out.printf("REACHED CONCLUSION:\n %s\n\tCategory: %s\n\tEntity: %s\n\tSentiment: %s\n\tURL: %s\nreasoning:\n%s",
+					c.suggestion, c.category, c.entity, c.sentiment, fixedurl, c.reasoning);
 		System.out.println("===================");
 		
 		if(!database.isAlertPresent(fixedurl) && c.result != null){
 			String title = c.result.type == Result.TWITTER ? "Tweet" : c.result.params.get(0);
 			String desc = c.result.type == Result.RSS ? c.result.params.get(2) : c.result.params.get(0);
-			database.insertAlert(title, fixedurl, desc, c.suggestion, 1);
+			database.insertAlert(title, fixedurl, desc, c.suggestion, c.reasoning);
 		}
 	}
 	

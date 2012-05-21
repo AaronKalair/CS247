@@ -22,6 +22,7 @@ class AlchemySentimentResult extends Result {
 		if(c != null && !sentiment.equals("0")){
 			c.sentiment = new Float(Float.parseFloat(sentiment));
 			System.out.println("Alchemy sentiment: " + c.sentiment);
+			c.reasoning += "Sentiment: " + c.sentiment + " (via AlchemyAPI).\n";
 			
 			if(c.category != null && c.category.equals("Country") && c.entity != null && c.sentiment < 0){
 				Job j = new Job(Job.WOLFRAM_ALPHA, url);

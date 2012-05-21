@@ -31,6 +31,7 @@ class WolframAlphaResult extends Result {
 					exports = new String[1];
 					exports[0] = res;
 				}
+				c.reasoning += "Country exports: " + exports[0].trim() + " (via WolframAlpha).\n";
 				if(c.sentiment < 0){
 					c.suggestion = "Prices of " + exports[0].trim() + " may increase.";
 					results_thread.addConclusionToDatabase(c);

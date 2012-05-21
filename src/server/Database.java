@@ -15,7 +15,8 @@ public class Database {
     + "`link` VARCHAR( 500 ) NOT NULL,"
     + "`description` TEXT( 10000 ) NOT NULL,"
     + "`suggestions` TEXT( 10000 ) NOT NULL,"
-    + "`importance` TINYINT NOT NULL,"
+    + "`reasoning` TEXT( 10000 ) NOT NULL,"
+    + "`importance` TINYINT NOT NULL DEFAULT 1,"
     + "`time_stamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);";
     
     private final String create_android_devices =
@@ -67,41 +68,16 @@ public class Database {
     /* Inserts an alert into the android_alerts table
      * @param title The title of the alert
      * @param link The link to the source of the alert
-     * @param importance A integer representing how important this alert is, pass in -1 if you do not want to use this parameter
-     */
-    public void insertAlert(String title, String link, int importance) {
-        
-        PreparedStatement addAlert = null;
-        
-        String insertAlert = "INSERT INTO android_alerts (alert_id, title, link, importance) values(NULL, ?, ?, ?)";
-        
-        try {
-            addAlert = conn.prepareStatement(insertAlert);
-            addAlert.setString(1, title);
-            addAlert.setString(2, link);
-            addAlert.setInt(3, importance);
-            addAlert.executeUpdate();
-        }
-        
-        catch (Exception e) {
-           e.printStackTrace();
-        }
-    
-    }
-    
-    /* Inserts an alert into the android_alerts table
-     * @param title The title of the alert
-     * @param link The link to the source of the alert
      * @param description The main body of text about this alert.
      * @param suggestions What we think they should do based on this alert
      * @param importance A integer representing how important this alert is, pass in -1 if you do not want to use this parameter
      * @return the id of the alert that was inserted.
      */
-    public void insertAlert(String title, String link, String description, String suggestions, int importance) {
+    public void insertAlert(String title, String link, String description, String suggestions, String reasoning) {
         
         PreparedStatement addAlert = null;
         
-        String insertAlert = "INSERT INTO android_alerts (alert_id, title, link, description, suggestions, importance) values(NULL, ?, ?, ?, ? , ?)";
+        String insertAlert = "INSERT INTO android_alerts (alert_id, title, link, description, suggestions, reasoning) values(NULL, ?, ?, ?, ?, ?)";
         
         try {
             // can't return the value of the alert_id column with sqlite :/
@@ -110,7 +86,7 @@ public class Database {
             addAlert.setString(2, link);
             addAlert.setString(3, description);
             addAlert.setString(4, suggestions);
-            addAlert.setInt(5, importance);
+            addAlert.setString(5, reasoning);
             addAlert.executeUpdate();
             //we can select last insert id
         }
@@ -139,13 +115,13 @@ public class Database {
     
     /* Gets an alert from the android_alerts table by its ID as an array
      * @param id The id of the alert you want to get
-     * @return array representing part of the row returned 0 = Title, 1 = Link, 2 = Description, 3 = Suggestions
+     * @return array representing part of the row returned 0 = Title, 1 = Link, 2 = Description, 3 = Suggestions, 4 = reasoning
      */
    public String[] getAlertByIDAsArray(int alert_id) {
         
         PreparedStatement getAlert = null;
         ResultSet rs = null;
-        String[] Results = new String[4];
+        String[] Results = new String[5];
         
         String alertToGet = "SELECT * FROM android_alerts WHERE alert_id = ? ";
         
@@ -159,6 +135,7 @@ public class Database {
             Results[1] = rs.getString("link");
             Results[2] = rs.getString("description");
             Results[3] = rs.getString("suggestions");
+            Results[4] = rs.getString("reasoning");
             rs.close();
         }
         
