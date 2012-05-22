@@ -35,9 +35,11 @@ public class Server {
 	
 	boolean run() {
 		// accept a connection, this will block until someone connects.
-		Socket connection;
+		Socket connection = null;
+		OutputStream client_out = null;
 		try {
 			connection = socket.accept();
+			client_out = connection.getOutputStream();
 		} catch(IOException e){
 			e.printStackTrace();
 			// return here so that we can try accepting again.
@@ -55,6 +57,7 @@ public class Server {
 		} else {
 			logger.log(Level.WARNING, "Non-whitelisted ip " + ip + " attempted to connect.");
 			try {
+				client_out.write((byte)0);
 				connection.close();
 			} catch(IOException e){
 				e.printStackTrace();
