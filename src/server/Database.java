@@ -123,9 +123,9 @@ public class Database {
         
         PreparedStatement getAlert = null;
         ResultSet rs = null;
-        String[] Results = new String[5];
+        String[] Results = new String[6];
         
-        String alertToGet = "SELECT * FROM android_alerts WHERE alert_id = ? ";
+        String alertToGet = "SELECT * FROM android_alerts WHERE alert_id = ? LIMIT 1";
         
         try {
             getAlert = conn.prepareStatement(alertToGet);
@@ -138,6 +138,7 @@ public class Database {
             Results[2] = rs.getString("description");
             Results[3] = rs.getString("suggestions");
             Results[4] = rs.getString("reasoning");
+            Results[5] = rs.getString("time_stamp");
             rs.close();
         }
         
@@ -233,7 +234,7 @@ public class Database {
     {
     	PreparedStatement devices = null;
         ResultSet rs = null;
-        List results = null;
+        List<String> results = null;
         
     	try
         {

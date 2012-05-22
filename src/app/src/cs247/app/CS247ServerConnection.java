@@ -57,9 +57,9 @@ public class CS247ServerConnection {
 				out.writeInt(alert_id);
 				
 				int num_results = in.readInt();
-				results = new String[num_results * 5];
+				results = new String[num_results];
 			
-				for(int i = 0; i < num_results * 5; ++i){
+				for(int i = 0; i < num_results; ++i){
 					results[i] = in.readUTF();
 				}
 			} catch(Exception e){
@@ -119,6 +119,17 @@ public class CS247ServerConnection {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void disconnect() {
+		try {
+			if(isConnected()){
+				out.writeByte((byte)4);
+			}
+			connection.close();
+		} catch (IOException e) {
+			connection = null;
 		}
 	}
 

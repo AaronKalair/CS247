@@ -82,6 +82,10 @@ public class AndroidClient extends Thread {
 						throw new IOException(e);
 					}
 					break;
+				case 4: // exit
+					logger.log(Level.INFO, "Android client ("+addr+") exiting.");
+					owner.dispose(this);
+					return;
 				}
 				try {
 					Thread.sleep(50);
@@ -90,19 +94,11 @@ public class AndroidClient extends Thread {
 				}
 			} catch (IOException e){
 				logger.log(Level.INFO, "Android client ("+addr+") dropped due to IOException.");
+				owner.dispose(this);
+				return;
 			}
 		}
+		logger.log(Level.INFO, "Android client ("+addr+") exiting.");
+		owner.dispose(this);
 	}
-	
-	private String readRegistrationID() throws IOException
-	{
-		StringBuilder id = new StringBuilder();
-		int c = 0;
-
-		while((c = in.read()) > 0)
-		{id.append((char)c);}
-		
-		return id.toString();
-	}
-
 }

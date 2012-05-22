@@ -12,6 +12,10 @@ public class MyC2dmReceiver extends BroadcastReceiver {
 	// 10.0.2.2 is an alias to the host running the emulator.
 	private CS247ServerConnection server_connection = new CS247ServerConnection("10.0.2.2");
 	
+	public MyC2dmReceiver(){
+		super();
+		if(server_connection.isConnected()) server_connection.disconnect();
+	}
     
 	@Override
 	// Listen for any messages coming in from the C2DM Server
@@ -58,7 +62,9 @@ public class MyC2dmReceiver extends BroadcastReceiver {
 	    else if (registration != null) {
 	    	Log.d("c2dm", "registration took place id:  " + registration);
 	    	// Send our ID up to the server
+	    	if(!server_connection.isConnected()) server_connection.connect();
 	        server_connection.registerC2DM(registration);
+	        server_connection.disconnect();
 	    }
 	    
 	}
@@ -73,6 +79,7 @@ public class MyC2dmReceiver extends BroadcastReceiver {
 		// Get the id of the alert from the message
 	    String message = intent.getExtras().getString("id");
 	    // Connect to the server and pull down the alert
+	    if(!server_connection.isConnected()) server_connection.connect();
 	    String[] alert = server_connection.getAlertFromServer(Integer.parseInt(message));
 	    
 	    try {
@@ -81,11 +88,12 @@ public class MyC2dmReceiver extends BroadcastReceiver {
             values.put("link", alert[1] );
             values.put("description", alert[2] );
             values.put("suggestions", alert[3] );
-            values.put("timestamp", alert[4] );
+            values.put("reasoning", alert[4]);
+            values.put("timestamp", alert[5] );
             db.insertOrThrow("alerts", null, values);
     	} catch (Exception e) {
     		Log.e("DB", "Insert failed from push alert");
     	}
-
+	    server_connection.disconnect();
 	}
 }
