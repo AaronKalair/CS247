@@ -12,6 +12,7 @@ public class ClientWorkerThread extends Thread {
 	private final Scheduler scheduler;
 	private final ResultsThread results_thread;
 	private boolean results_pending;
+	private Job current_job = null;
 
 	ClientWorkerThread(Socket connection, Server server) {
 		super("ClientWorkerThread");
@@ -22,6 +23,7 @@ public class ClientWorkerThread extends Thread {
 		try {
 			input = new DataInputStream(connection.getInputStream());
 			output = new DataOutputStream(new BufferedOutputStream(connection.getOutputStream(), 16384));
+			output.writeByte((byte)1);
 		} catch (IOException e){
 			e.printStackTrace();
 		}
@@ -35,7 +37,9 @@ public class ClientWorkerThread extends Thread {
 				try {
 					Result r = Result.deserialize(input);
 					results_thread.addResult(r);
-				} catch(IOException e){
+				} catch(Exception e){
+					// tell the scheduler to resend this job.
+					scheduler.addJob(current_job);
 					System.out.println("[Client removed] " + e.getMessage());
 					// return here to end this thread, since the connection is broken.
 					return;
@@ -43,11 +47,13 @@ public class ClientWorkerThread extends Thread {
 				results_pending = false;
 			} else {
 				// get the next job from the scheduler, this will block until one is available.
-				Job j = scheduler.getNextJob();
+				current_job = scheduler.getNextJob();
 				// serialize it and send it to our client.
 				try {
-					j.serialize(output);
+					current_job.serialize(output);
 				} catch(Exception e){
+					// tell the scheduler to resend this job.
+					scheduler.addJob(current_job);
 					System.out.println("[Client removed] " + e.getMessage());
 					// return here to end this thread, since the connection is broken.
 					return;

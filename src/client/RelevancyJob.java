@@ -17,11 +17,11 @@ package CS247;
 public class RelevancyJob extends Job {
 
 	// strings to match natural disasters, two sets to reduce false positives.
-	private static final String[] disasters1 = { "tsunami", "flood", "earthquake", "volcano", "explosion" };
+	private static final String[] disasters1 = { "tsunami", "flood", "earthquake", "volcano", "explosion", "blast", "bomb" };
 	private static final String[] disasters2 = { "devastate", "kill", "destroy", "richter" };
 	// strings to match stock market related stuff.
 	private static final String[] stocks1 = { "stocks", "shares", "trade", "trading" };
-	private static final String[] stocks2 = { "AAPL", "MSFT", "FTSE", "NASDAQ", "stock market", "share price" };
+	private static final String[] stocks2 = { "aapl", "msft", "ftse", "nasdaq", "stock market", "share price" };
 	
 	private static final boolean debug = true;
 	
@@ -44,8 +44,8 @@ public class RelevancyJob extends Job {
 		
 		if(match2(disasters1, disasters2)){
 			// if it matches a natural disaster, we want to find out which country next.
-			if(debug) System.out.println("Relevant to Country.");
-			res.addParam("Country");
+			if(debug) System.out.println("Relevant to Disaster.");
+			res.addParam("Disaster");
 		} else if(match2(stocks1, stocks2)){
 			// if it matches stocks, set the result accordingly.
 			if(debug) System.out.println("Relevant to Stocks.");

@@ -21,7 +21,7 @@ class TwitterJob extends XMLJob {
 		super(j);
 		
 		try {
-			url = "http://api.twitter.com/1/statuses/user_timeline.xml?include_entities=true&screen_name=" + params.get(0) + "&count=20";
+			url = "http://api.twitter.com/1/statuses/user_timeline.xml?include_entities=true&screen_name=" + params.get(0) + "&count=50";
 		} catch(Throwable e){
 			e.printStackTrace();
 			ret = new Result(Result.INVALID);

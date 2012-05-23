@@ -22,7 +22,7 @@ class RelevancyResult extends Result {
 		if(c != null && !category.equals("none")){
 			c.category = category;
 			// if this url is relevant to countries, get the sentiment.
-			if(category.equals("Country")){
+			if(category.equals("Disaster")){
 				c.reasoning += "Relevant to Disaster (keyword match).\n";
 				System.out.println("adding alchemy entity job.");
 				Job j = new Job(Job.ALCHEMY_ENTITY, url);

@@ -23,7 +23,7 @@ class WolframAlphaResult extends Result {
 		
 		if(!res.equals("none") && c != null){
 			// if we're getting country exports, we might be able to infer a price increase.
-			if(c.category != null && c.category.equals("Country") && c.sentiment != null){
+			if(c.category != null && c.category.equals("Disaster") && c.sentiment != null){
 				String[] exports;
 				if(res.contains("|")){
 					exports = res.split("\\|");
