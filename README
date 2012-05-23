@@ -1,17 +1,61 @@
-The repository for team 3's CS247 project.
+Compiling the system
+====================
 
-For help with out git workflow see this google doc:
-https://docs.google.com/document/d/1-HtXT8bjY4XAk1sygqj-aXl5Y3Wd0LCmI-QXJWHFfe8/edit
+To compile / build the system, run "ant".
 
-To compile type "ant" in a terminal at the CS247 folder.
-To compile the app, type "ant app". For this to work, you must have run "android update project -p /path/to/CS247/src/app/" once.
+To compile the app, you'll need to run 
+"android update project -p /path/to/src/app"
+followed by "ant app".
 
-To clean up any files created by ant type: "ant clean" at the CS247 folder.
+Or you can use the eclipse ADT plugin which is simpler.
 
-To run the server: java -jar bin/server.jar
-To run the client: java -jar bin/client.jar 
 
-To edit our database structure use the database.sql file in /scripts.
-To build our database structure on your own machine run the contents of the file as an SQL command on a database called CS247.
+Running the system
+==================
 
-Be sure to create a issue and assign yourself to it before starting work to ensure everyone knows what your doing !
+The system is comprised of two components: server.jar and client.jar
+To start the system, firstly run server.jar with the following command:
+	java -jar server.jar
+
+Then start a client with
+	java -jar client.jar
+
+It is possible, and encouraged, to run multiple clients. Just run the previous
+command several times.
+
+The clients need not be started on the same machine as the server, but you will
+need to add the IP addresses of any clients to whitelist.txt on the machine
+running the server. The server does NOT need to be restarted after a change to
+whitelist.txt
+
+
+Adding data sources
+===================
+
+Data sources can be added to the system in the sources.txt file.
+Currently both RSS feeds and Twitter feeds are supported.
+
+For an RSS feed, use the following syntax:
+RSS <interval> <url>
+
+For a Twitter feed, use:
+TWT <interval> <twitter username>
+
+where interval is the time period, in seconds, between re-parsing.
+
+The server does NOT need to be restarted after changing sources.txt, it will
+update as soon as the file is saved.
+
+
+Running the android app
+=======================
+
+The android app can be run via the official emulator that Google provides,
+I recommend using the eclipse ADT plugin to do this as it's more straightforward
+
+The app attempts to connect to a server running on the same machine as the
+emulator and will display whether or not is has successfully connected.
+
+
+
+
