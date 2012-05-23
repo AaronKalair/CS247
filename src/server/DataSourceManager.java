@@ -34,7 +34,12 @@ class DataSourceManager {
 				output.println("# RSS <interval> <url> for an RSS feed.");
 				output.println("# or");
 				output.println("# TWT <interval> <twitter name> for a twitter feed.");
-				output.println("RSS 600 http://feeds.bbci.co.uk/news/rss.xml");
+				output.println("RSS 500 http://feeds.bbci.co.uk/news/rss.xml");
+				output.println("RSS 500 http://feeds.bbci.co.uk/news/business/rss.xml");
+				output.println("RSS 500 http://feeds.reuters.com/reuters/businessNews");
+				output.println("RSS 500 http://feeds.reuters.com/Reuters/worldNews");
+				output.println("RSS 500 http://news.ycombinator.com/rss");
+				output.println("TWT 500 breakingnews");
 				output.close();
 			}
 		} catch(Exception e){
