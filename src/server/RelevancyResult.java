@@ -38,7 +38,15 @@ class RelevancyResult extends Result {
 				j.addParam("Company");
 				
 				scheduler.addJob(j);
-				System.out.println("added.");
+			}
+			
+			if(category.equals("Product")){
+				c.reasoning += "Relevant to New Product (keyword match).\n";
+				System.out.println("adding alchemy entity job.");
+				Job j = new Job(Job.ALCHEMY_ENTITY, url);
+				j.addParam("Company");
+				
+				scheduler.addJob(j);
 			}
 		}
 	}

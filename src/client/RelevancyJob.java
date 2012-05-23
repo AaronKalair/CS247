@@ -4,7 +4,7 @@ package CS247;
 	This job is used to determine whether a piece of source info is worth looking
 	into further by matching it against keywords.
 
-	Currently it just does natural disasters, add more categories!
+	Currently it just does stocks & disasters, add more categories!
 
 	It should get two params from the server:
 	0 = the url.
@@ -20,8 +20,8 @@ public class RelevancyJob extends Job {
 	private static final String[] disasters1 = { "tsunami", "flood", "earthquake", "volcano", "explosion", "blast", "bomb" };
 	private static final String[] disasters2 = { "devastate", "kill", "destroy", "richter" };
 	// strings to match stock market related stuff.
-	private static final String[] stocks1 = { "stocks", "shares", "trade", "trading" };
-	private static final String[] stocks2 = { "aapl", "msft", "ftse", "nasdaq", "stock market", "share price" };
+	private static final String[] stocks1 = { "stock", "share", "trade", "trading", "margin", "deal" };
+	private static final String[] stocks2 = { "aapl", "msft", "ftse", "nasdaq", "dow jones", "stock market", "share price", "£", "$" };
 	
 	private static final boolean debug = true;
 	

@@ -25,7 +25,7 @@ class AlchemyEntityResult extends Result {
 			c.entity = entity;
 
 			// if this url is relevant to countries, get the sentiment.
-			if(c.category != null && c.category.equals("Disaster") || c.category.equals("Stocks")){
+			if(c.category != null){
 				System.out.println("adding alchemy sentiment job");
 				Job j = new Job(Job.ALCHEMY_SENTIMENT, url);
 				
@@ -34,7 +34,7 @@ class AlchemyEntityResult extends Result {
 				if(c.category.equals("Disaster")){
 					c.reasoning += "Identified country: " + c.entity + " (via AlchemyAPI).\n";
 				}
-				if(c.category.equals("Stocks")){
+				if(c.category.equals("Stocks") || c.category.equals("Product")){
 					c.reasoning += "Identified company: " + c.entity + " (via AlchemyAPI).\n";
 				}
 			}

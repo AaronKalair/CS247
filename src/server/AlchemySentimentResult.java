@@ -31,11 +31,11 @@ class AlchemySentimentResult extends Result {
 				scheduler.addJob(j);
 			}
 			
-			if(c.category != null && c.category.equals("Stocks") && c.entity != null){				
+			if(c.category != null && (c.category.equals("Stocks") || c.category.equals("Product")) && c.entity != null){				
 				if(c.sentiment < 0){
 					c.suggestion = "Consider selling shares of " + c.entity + ".";
 					results_thread.addConclusionToDatabase(c);
-				} else if(c.sentiment > 0.15) {
+				} else if(c.sentiment > 0.08) {
 					c.suggestion = "Consider investing in shares of " + c.entity + ".";
 					results_thread.addConclusionToDatabase(c);
 				}

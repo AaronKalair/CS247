@@ -93,8 +93,10 @@ class RSSHandler extends DefaultHandler {
 		if(current_element.equals("link")){
 			item.link += (new String(ch, start, length)).replaceAll("(\\r|\\n)", "");
 		}
-		if(current_element.equals("description")){
-			item.desc += (new String(ch, start, length)).replaceAll("(\\r|\\n)", "");
+		if(current_element.equals("description") && item.desc.equals("")){
+			int maxlength = Math.min(length, 200);
+			item.desc += (new String(ch, start, maxlength)).replaceAll("(\\r|\\n)", "");
+			if(maxlength == 200) item.desc += "...";
 		}
 	}
 	// this method is called for every xml end tag i.e. </item>

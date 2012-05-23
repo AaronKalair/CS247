@@ -58,7 +58,7 @@ class AlchemyEntityJob extends AlchemyJob {
 // XML handler.
 class AlchemyEntityHandler extends DefaultHandler {
 
-	Result result;
+	Result result = null;
 	String url;
 	String category;
 	String current_element;
@@ -85,6 +85,17 @@ class AlchemyEntityHandler extends DefaultHandler {
 				store_text = true;
 			}
 		}
+		// if the relevancy is too low, then don't return it.
+		if(done == 0 && store_text && current_element.equals("relevance")){
+			String num = new String(ch, start, length);
+			Float f = Float.parseFloat(num);
+			if(f < 0.5){
+				result = new Result(Result.ALCHEMY_ENTITY);
+				result.addParam(url);
+				result.addParam("none");
+				done = 2;
+			}
+		}
 		// store the <text> component.
 		if(done == 0 && store_text && current_element.equals("text")){
 			String text = new String(ch, start, length);
@@ -94,7 +105,7 @@ class AlchemyEntityHandler extends DefaultHandler {
 			done = 1;
 		}
 		// if there is a <name> element, then store this instead (this is the disambiguated version).
-		if(done == 1 && store_text && current_element.equals("name")){
+		if(done == 1 && store_text && current_element.equals("name") && result != null){
 			String text = new String(ch, start, length);
 			result.params.add(1, text);
 			done = 2;
