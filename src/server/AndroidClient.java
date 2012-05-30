@@ -41,7 +41,7 @@ public class AndroidClient extends Thread {
 				switch(in.read())
 				{
 				case 0://register
-					out.write(database.removeRegistrationID(in.readUTF()) ? 1 : 0);
+					out.write(database.insertRegistrationID(in.readUTF()) ? 1 : 0);
 					break;
 				case 1://deregister
 					out.write(database.removeRegistrationID(in.readUTF()) ? 1 : 0);
