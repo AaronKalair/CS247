@@ -1,3 +1,17 @@
+About
+=====
+
+This system was built for the CS247 group project module at the University of Warwick, UK.
+
+It parses news from a list of sources and determines which news items might be relevant to the stock market
+by matching keywords in them to a list of keywords hardcoded in the application.
+
+If a match is found it then determines what actions the user should take based on this news item to maximise gains
+or minimise losses. 
+
+Finally it reports this infromation to a user via an android application.
+
+
 Compiling the system
 ====================
 
