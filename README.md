@@ -15,7 +15,7 @@ Here is a high level overview of how the system works
 
 
 
-This is what the android application looks like
+This is the android application
 
 ![Android](https://github.com/AaronKalair/CS247/raw/master/android.jpg)
 
