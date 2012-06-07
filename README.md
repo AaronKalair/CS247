@@ -12,9 +12,8 @@ Finally it reports this information to a user via an android application.
 Here is a high level overview of how the system works
 ![Overview](https://github.com/AaronKalair/CS247/raw/master/overview.jpg)
 
-And some screen shots of the android application
-![Home Screen](https://github.com/AaronKalair/CS247/raw/master/homescreen.jpg)
-![Drill Down](https://github.com/AaronKalair/CS247/raw/master/drilldown.png)
+This is what the android application looks like
+![Android](https://github.com/AaronKalair/CS247/raw/master/android.jpg)
 
 Misc
 ====
