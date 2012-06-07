@@ -10,10 +10,15 @@ Then if an article is found it then determines what actions the user should take
 Finally it reports this information to a user via an android application.
 
 Here is a high level overview of how the system works
+
 ![Overview](https://github.com/AaronKalair/CS247/raw/master/overview.jpg)
 
+
+
 This is what the android application looks like
+
 ![Android](https://github.com/AaronKalair/CS247/raw/master/android.jpg)
+
 
 Misc
 ====
