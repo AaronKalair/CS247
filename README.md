@@ -3,13 +3,29 @@ About
 
 This system was built for the CS247 group project module at the University of Warwick, UK.
 
-It parses news from a list of sources and determines which news items might be relevant to the stock market
-by matching keywords in them to a list of keywords hardcoded in the application.
+It searches the internet for news that might be relevant to stock market.
 
-If a match is found it then determines what actions the user should take based on this news item to maximise gains
-or minimise losses. 
+Then if an article is found it then determines what actions the user should take based on this news item to maximise gains or minimise losses. 
 
-Finally it reports this infromation to a user via an android application.
+Finally it reports this information to a user via an android application.
+
+Here is a high level overview of how the system works
+![Overview](https://)
+
+And some screen shots of the android application
+![Home Screen](https://)
+![Drill Down](https://)
+
+Misc
+====
+You will need to define some values in order for this application to be fully functional.
+
+In CS247App.java enter your google account id to enable C2DM support
+
+In AlchemyJob.java enter your alchemy api key (http://www.alchemyapi.com/api/register.html )
+
+In WolframAlpaJob.java enter your wolfram alpha app id (https://developer.wolframalpha.com/portal/apisignup.html)
+
 
 
 Compiling the system
@@ -70,6 +86,5 @@ I recommend using the eclipse ADT plugin to do this as it's more straightforward
 The app attempts to connect to a server running on the same machine as the
 emulator and will display whether or not is has successfully connected.
 
-
-
+If you wish to change the address of the server the android application connects to you can edit it in the CS247App.java file.
 
