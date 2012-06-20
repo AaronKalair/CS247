@@ -24,12 +24,15 @@ Misc
 ====
 You will need to define some values in order for this application to be fully functional.
 
-In CS247App.java enter your google account id to enable C2DM support
-
 In AlchemyJob.java enter your alchemy api key (http://www.alchemyapi.com/api/register.html )
 
 In WolframAlpaJob.java enter your wolfram alpha app id (https://developer.wolframalpha.com/portal/apisignup.html)
 
+In CS247App.java enter your google account id to enable C2DM support
+
+and
+
+In AndroidServer.java enter your google auth string to enable C2DM support (http://stackoverflow.com/questions/5284326/android-c2dm-auth-token-one-time-or-every-time )
 
 
 Compiling the system
